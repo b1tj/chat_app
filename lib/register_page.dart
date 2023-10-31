@@ -1,3 +1,4 @@
+import 'package:chat_app/code_verification_page.dart';
 import 'package:flutter/material.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -16,7 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(
+            const SizedBox(
               width: 295,
               height: 86,
               child: Column(
@@ -48,8 +49,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 ],
               ),
             ),
-            SizedBox(height: 48),
-            SizedBox(
+            const SizedBox(height: 48),
+            const SizedBox(
               width: 295,
               child: TextField(
                 decoration: InputDecoration(
@@ -65,23 +66,30 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
             ),
-            SizedBox(height: 70),
+            const SizedBox(height: 70),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
               child: SizedBox(
                 width: 250,
                 height: 52,
                 child: TextButton(
                   style: TextButton.styleFrom(
                       foregroundColor: Colors.white,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 48, vertical: 12),
-                      backgroundColor: Color(0xFF002DE3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 48, vertical: 12),
+                      backgroundColor: const Color(0xFF002DE3),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       )),
-                  child: Text("Continue"),
-                  onPressed: () {},
+                  child: const Text("Continue"),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CodeVerificationPage(),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

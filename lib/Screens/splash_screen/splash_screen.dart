@@ -1,5 +1,5 @@
-
-import 'package:chat_app/home_page.dart';
+import 'package:chat_app/Screens/auth_screen/SignInScreen.dart';
+import 'package:chat_app/Screens/auth_screen/SignUpScreen.dart';
 import 'package:flutter/material.dart';
 
 class StartScreen extends StatefulWidget {
@@ -76,7 +76,7 @@ class _StartScreenState extends State<StartScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HomePage()),
+                            builder: (context) => const SignUpScreen()),
                       );
                     },
                     child: const Text(

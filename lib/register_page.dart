@@ -1,5 +1,6 @@
 import 'package:chat_app/code_verification_page.dart';
 import 'package:flutter/material.dart';
+import 'package:email_validator/email_validator.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -9,6 +10,14 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,11 +32,11 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 children: [
                   Text(
-                    "Enter Your Phone Number",
+                    "Enter Your Email",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Color(0xFF0F1828),
-                      fontSize: 24,
+                      fontSize: 28,
                       fontFamily: 'Mulish',
                       fontWeight: FontWeight.w700,
                     ),
@@ -35,11 +44,11 @@ class _RegisterPageState extends State<RegisterPage> {
                   SizedBox(height: 8),
                   Expanded(
                     child: Text(
-                      'Please confirm your country code and enter your phone number',
+                      'Please enter your email',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Color(0xFF0F1828),
-                        fontSize: 14,
+                        fontSize: 18,
                         fontFamily: 'Mulish',
                         fontWeight: FontWeight.w400,
                         height: 1.4,
@@ -50,15 +59,16 @@ class _RegisterPageState extends State<RegisterPage> {
               ),
             ),
             const SizedBox(height: 48),
-            const SizedBox(
+            SizedBox(
               width: 295,
               child: TextField(
-                decoration: InputDecoration(
+                controller: emailController,
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   focusedBorder: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFFADB5BD)),
                   ),
-                  hintText: 'Phone Number',
+                  hintText: 'example@mail.com',
                   fillColor: Color(0xFFADB5BD),
                   focusColor: Color(0xFFADB5BD),
                   contentPadding:
@@ -81,14 +91,25 @@ class _RegisterPageState extends State<RegisterPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       )),
-                  child: const Text("Continue"),
+                  child: const Text(
+                    "Continue",
+                    style: TextStyle(fontSize: 16),
+                  ),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CodeVerificationPage(),
-                      ),
-                    );
+                    if (!EmailValidator.validate(emailController.text)) {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(content: Text('Invalid Email'));
+                          });
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CodeVerificationPage(),
+                        ),
+                      );
+                    }
                   },
                 ),
               ),

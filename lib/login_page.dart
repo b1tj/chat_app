@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text("Đăng nhập"),
+            Text("Email"),
             TextFormField(
               controller: accountController,
               onChanged: (value) {
@@ -40,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
               },
             ),
             SizedBox(height: 30),
-            Text("Mật khẩu"),
+            Text("Password"),
             TextFormField(
               obscureText: true,
               controller: passwordController,
@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                             builder: (context) => const RegisterPage()));
                   });
                   if (context.mounted) {
-                    _showAlertDialog(context, 'Dang ky thanh cong');
+                    _showAlertDialog(context, 'Sign up successfully');
                   }
                 } catch (e) {
                   if (context.mounted) {

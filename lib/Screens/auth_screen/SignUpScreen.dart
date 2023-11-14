@@ -27,7 +27,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
       print("${userCredential.user!.email}");
       if (context.mounted) {
-        _showAlertDialog(context, "Đăng kí thành công", "Welcome");
+        _showAlertDialog(context, "Đăng kí thành công!", "Welcome");
         Navigator.pop(context);
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
       }

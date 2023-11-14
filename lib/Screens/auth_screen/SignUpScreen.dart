@@ -1,3 +1,4 @@
+import 'package:chat_app/Screens/home_screen/home_page.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -27,6 +28,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       print("${userCredential.user!.email}");
       if (context.mounted) {
         _showAlertDialog(context, "Đăng kí thành công", "Welcome");
+        Navigator.pop(context);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
       }
     } on FirebaseAuthException catch (e) {
       print(e);

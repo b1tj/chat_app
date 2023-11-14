@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:chat_app/home_page.dart';
+import 'package:chat_app/Screens/home_screen/home_page.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -31,12 +31,12 @@ class _SignInScreenState extends State<SignInScreen> {
       print("${userCredential.user!.email}");
       if (context.mounted) {
         _showAlertDialog(context, "Đăng nhập thành công", "Welcome");
-        final SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+        final SharedPreferences sharedPreferences =
+            await SharedPreferences.getInstance();
         sharedPreferences.setString('_email', _emailController.text);
         sharedPreferences.setString('_password', _passwordController.text);
         Navigator.pop(context);
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
       }
     } on FirebaseAuthException catch (e) {
       print(e);

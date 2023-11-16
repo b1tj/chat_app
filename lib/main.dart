@@ -1,5 +1,8 @@
 import 'package:chat_app/Screens/auth_screen/SignInScreen.dart';
+import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/Screens/home_screen/home_page.dart';
 import 'package:chat_app/Screens/splash_screen/splash_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,8 +22,34 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var auth = FirebaseAuth.instance;
+  var isLogin = false;
+
+  checkIfLogin() async {
+    auth.authStateChanges().listen((User? user) { 
+      if (user != null && mounted)
+      {
+        setState(() {
+          isLogin = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    checkIfLogin();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +57,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.grey),
       color: Colors.black,
-      home: const WelcomeScreen(),
+      home: isLogin ? const HomePage() : const WelcomeScreen(),
     );
   }
 }
@@ -68,7 +97,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SignInScreen(),
+      body: SignInScreen1(),
     );
   }
 }

@@ -1,53 +1,59 @@
-import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/Screens/auth_screen/SignUpScreen.dart';
 import 'package:chat_app/Screens/home_screen/home_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+class SignInScreen1 extends StatefulWidget {
+  const SignInScreen1({Key? key});
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  State<SignInScreen1> createState() => _SignInScreen1State();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignInScreen1State extends State<SignInScreen1> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   String _email = "";
   String _password = "";
   bool _isLoading = false;
   bool _isPasswordHidden = true;
 
-
-  Future<void> _handleSignUp() async {
+  Future<void> _handleSignIn() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       try {
         setState(() {
           _isLoading = true;
         });
 
-        UserCredential userCredential =
-            await _auth.createUserWithEmailAndPassword(
+        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: _email,
           password: _password,
         );
 
         print("${userCredential.user!.email}");
 
-        if (context.mounted) {
-          _showAlertDialog(context, "Đăng ký thành công!", "Welcome");
-        }
+        _showAlertDialog(context, "Đăng nhập thành công", "Welcome");
+
+        final SharedPreferences sharedPreferences =
+            await SharedPreferences.getInstance();
+        sharedPreferences.setString('_email', _emailController.text);
+        sharedPreferences.setString('_password', _passwordController.text);
+
+        await Future.delayed(Duration(seconds: 3));
+
+        Navigator.pop(context);
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
       } on FirebaseAuthException catch (e) {
         print(e);
-        if (context.mounted) {
-          _showAlertDialog(context, e.message.toString(), e.code);
-        }
+        _showAlertDialog(context, e.message.toString(), e.code);
       } finally {
         setState(() {
           _isLoading = false;
@@ -82,7 +88,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Container(
                   alignment: Alignment.topLeft,
                   child: const Text(
-                    "Sign up",
+                    "Login",
                     style: TextStyle(
                       fontSize: 27,
                       fontWeight: FontWeight.w700,
@@ -113,23 +119,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           setState(() {
                             _email = value;
                           });
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      TextFormField(
-                        controller: _fullNameController,
-                        decoration: InputDecoration(
-                          icon: Icon(Icons.info),
-                          hintText: "Full name",
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.black26),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return "Điền đầy đủ tên!";
-                          }
-                          return null;
                         },
                       ),
                       SizedBox(height: 20),
@@ -165,38 +154,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           });
                         },
                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: RichText(
-                          text: TextSpan(
-                            style: TextStyle(fontSize: 13, color: Colors.grey),
-                            children: [
-                              TextSpan(
-                                  text: "By signing up, you're agree to our "),
-                              TextSpan(
-                                text: "Terms & Conditions",
-                                style: TextStyle(
-                                  color: Color(0xFF0065FF),
-                                  // You can add other styles if needed
-                                ),
-                              ),
-                              TextSpan(text: " and "),
-                              TextSpan(
-                                text: "Privacy Policy",
-                                style: TextStyle(
-                                  color: Color(0xFF0065FF),
-                                  // You can add other styles if needed
-                                ),
-                              ),
-                            ],
+                      Container(
+                        margin: EdgeInsets.symmetric(vertical: 25),
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "Forgot Password?",
+                          style: TextStyle(
+                            color: Color(0xFF0065FF),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 30),
                         width: double.infinity,
                         height: 55,
                         decoration: BoxDecoration(
@@ -218,34 +187,75 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               )
                             : TextButton(
                                 onPressed: () {
-                                  _handleSignUp();
+                                  _handleSignIn();
                                 },
                                 child: Text(
-                                  "Sign up",
+                                  "Login",
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 ),
                               ),
                       ),
-                      const SizedBox(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: const Row(
+                          children: <Widget>[
+                            Expanded(child: Divider()),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 30),
+                              child: Text("OR"),
+                            ),
+                            Expanded(child: Divider()),
+                          ],
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.blue,
+                            child: IconButton(
+                              icon: Icon(Icons.facebook),
+                              onPressed: () {
+                                // Handle Facebook sign-in
+                              },
+                              color: Colors.white,
+                            ),
+                          ),
+                          CircleAvatar(
+                            backgroundColor: Colors.red,
+                            child: IconButton(
+                              icon: SvgPicture.asset(
+                                'assets/vectors/google.svg',
+                                // Replace with the actual path to your Google SVG icon
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                // Handle Google sign-in
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
                         height: 10,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("Joined us before?"),
+                          Text("Don't have an account?"),
                           TextButton(
                             onPressed: () {
                               // Navigate to the sign-up screen
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => SignInScreen1(),
-                                ),
+                                    builder: (context) =>
+                                        SignUpScreen()), // Replace SignUpScreen() with your actual sign-up screen widget
                               );
                             },
                             child: Text(
-                              "Login",
+                              "Sign Up",
                               style: TextStyle(
                                 color: Color(0xFF0065FF),
                                 fontWeight: FontWeight.w500,

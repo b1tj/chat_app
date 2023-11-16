@@ -49,9 +49,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Đăng Nhập"),
-      ),
+      
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child: Center(

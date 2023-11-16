@@ -39,7 +39,7 @@ app.*.symbols
 app.*.map.json
 
 # Firebase related
-/lib/firebase_toptions.dart
+/lib/firebase_options.dart
 
 # Android Studio will place build artifacts here
 /android/app/debug

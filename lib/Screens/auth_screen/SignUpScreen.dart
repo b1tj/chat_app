@@ -1,5 +1,6 @@
 import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
 import 'package:chat_app/Screens/home_screen/home_page.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,12 +16,14 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _fullNameController = TextEditingController();
   String _email = "";
   String _password = "";
+  String _fullName = "";
   bool _isLoading = false;
   bool _isPasswordHidden = true;
 
@@ -37,6 +40,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
           email: _email,
           password: _password,
         );
+
+        _firestore.collection("users").doc(userCredential.user!.uid).set({
+          "uid": userCredential.user!.uid,
+          "email": _email,
+          "fullName": _fullName,
+        });
 
         print("${userCredential.user!.email}");
 
@@ -130,6 +139,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             return "Điền đầy đủ tên!";
                           }
                           return null;
+                        },
+                         onChanged: (value) {
+                          setState(() {
+                            _fullName = value;
+                          });
                         },
                       ),
                       SizedBox(height: 20),

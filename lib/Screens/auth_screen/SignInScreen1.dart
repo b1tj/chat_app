@@ -1,5 +1,7 @@
 import 'package:chat_app/Screens/auth_screen/SignUpScreen.dart';
+import 'package:chat_app/Screens/bottom_bar_screen/bottom_bar_screen.dart';
 import 'package:chat_app/Screens/home_screen/home_page.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,7 +51,7 @@ class _SignInScreen1State extends State<SignInScreen1> {
 
         Navigator.pop(context);
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(builder: (context) => BottomBarScreen()),
         );
       } on FirebaseAuthException catch (e) {
         print(e);

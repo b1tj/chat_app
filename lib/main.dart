@@ -1,5 +1,6 @@
 import 'package:chat_app/Screens/auth_screen/SignInScreen.dart';
 import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/Screens/bottom_bar_screen/bottom_bar_screen.dart';
 import 'package:chat_app/Screens/home_screen/home_page.dart';
 import 'package:chat_app/Screens/splash_screen/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -34,9 +35,8 @@ class _MyAppState extends State<MyApp> {
   var isLogin = false;
 
   checkIfLogin() async {
-    auth.authStateChanges().listen((User? user) { 
-      if (user != null && mounted)
-      {
+    auth.authStateChanges().listen((User? user) {
+      if (user != null && mounted) {
         setState(() {
           isLogin = true;
         });
@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.grey),
       color: Colors.black,
-      home: isLogin ? const HomePage() : const WelcomeScreen(),
+      home: isLogin ? const BottomBarScreen() : const WelcomeScreen(),
     );
   }
 }
@@ -70,8 +70,6 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  bool _showWelcomeScreen = true;
-
   @override
   void initState() {
     super.initState();
@@ -84,10 +82,13 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
     if (showWelcomeScreen) {
       // Hiển thị màn hình chào mừng
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => StartScreen()),
-      );
+
+      if (context.mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const StartScreen()),
+        );
+      }
 
       // Lưu trạng thái đã hiển thị màn hình chào mừng
       prefs.setBool('showWelcomeScreen', false);
@@ -101,8 +102,3 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     );
   }
 }
-
-
-
-// app
-

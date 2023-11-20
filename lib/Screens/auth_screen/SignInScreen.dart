@@ -26,7 +26,9 @@ class _SignInScreenState extends State<SignInScreen> {
   Future<void> _handleSignIn() async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: _email, password: _password);
+        email: _email,
+        password: _password,
+      );
 
       print("${userCredential.user!.email}");
       if (context.mounted) {
@@ -36,10 +38,13 @@ class _SignInScreenState extends State<SignInScreen> {
         sharedPreferences.setString('_email', _emailController.text);
         sharedPreferences.setString('_password', _passwordController.text);
         Navigator.pop(context);
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
-      print(e);
       if (context.mounted) {
         _showAlertDialog(context, e.message.toString(), e.code);
       }
@@ -49,7 +54,6 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       body: Padding(
         padding: const EdgeInsets.all(18.0),
         child: Center(

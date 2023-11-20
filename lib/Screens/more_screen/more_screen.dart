@@ -23,7 +23,7 @@ class _MoreScreenState extends State<MoreScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -74,35 +74,76 @@ class _MoreScreenState extends State<MoreScreen> {
                 )
               ],
             ),
-            SizedBox(
-              height: 24,
+            const SizedBox(
+              height: 32,
             ),
-            for (var item in itemList) ...[
-              Padding(
-                padding: const EdgeInsets.only(top: 24),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 24,
-                      height: 24,
-                      child: SvgPicture.asset(
-                        item.icon ?? '',
+            for (int i = 0; i < itemList.length; i++) ...[
+              InkWell(
+                onTap: () {},
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 24,
+                        height: 24,
+                        child: SvgPicture.asset(
+                          itemList[i].icon ?? '',
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 6,
-                    ),
-                    Text(item.title ?? ''),
-                    const Flexible(
-                      flex: 1,
-                      fit: FlexFit.tight,
-                      child: SizedBox(),
-                    ),
-                    SvgPicture.asset('assets/vectors/ic_arrow_right.svg')
-                  ],
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(itemList[i].title ?? ''),
+                      const Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: SizedBox(),
+                      ),
+                      SvgPicture.asset('assets/vectors/ic_arrow_right.svg'),
+                    ],
+                  ),
                 ),
               )
-            ]
+            ],
+            const SizedBox(height: 12),
+            const Divider(
+              thickness: 1.2,
+            ),
+            const SizedBox(height: 8),
+            for (int i = 0; i < partialItemList.length; i++) ...[
+              InkWell(
+                // Logout logic
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 24,
+                        height: 24,
+                        child: SvgPicture.asset(
+                          partialItemList[i].icon ?? '',
+                          width: 24,
+                          height: 24,
+                          fit: BoxFit.scaleDown,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 6,
+                      ),
+                      Text(partialItemList[i].title ?? ''),
+                      const Flexible(
+                        flex: 1,
+                        fit: FlexFit.tight,
+                        child: SizedBox(),
+                      ),
+                      SvgPicture.asset('assets/vectors/ic_arrow_right.svg')
+                    ],
+                  ),
+                ),
+              )
+            ],
           ],
         ),
       ),
@@ -129,5 +170,20 @@ List<ItemEntity> itemList = [
   ItemEntity(
     icon: 'assets/vectors/ic_appearance.svg',
     title: 'Appearance',
+  ),
+  ItemEntity(
+    icon: 'assets/vectors/ic_notification.svg',
+    title: 'Notification',
+  ),
+];
+
+List<ItemEntity> partialItemList = [
+  ItemEntity(
+    icon: 'assets/vectors/ic_envelop.svg',
+    title: 'Invite your friends',
+  ),
+  ItemEntity(
+    icon: 'assets/vectors/ic_logout.svg',
+    title: 'Logout',
   ),
 ];

@@ -84,48 +84,75 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     height: 100,
                     child: ListView.builder(
-                        itemCount: people.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, int i) {
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigate to chat detail screen when user is tapped
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute<void>(
-                                  builder: (BuildContext context) =>
-                                      ChatDetailsScreen(
-                                          i + 1, people[i]),
-                                ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 5),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 60,
-                                    width: 60,
-                                    decoration: BoxDecoration(
+                      itemCount: people.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, int i) {
+                        bool isOnline =
+                            true; // Replace with the actual online status of the user
+
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to chat detail screen when user is tapped
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) =>
+                                    ChatDetailsScreen(i + 1, people[i]),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 5),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 60,
+                                      decoration: BoxDecoration(
                                         color: Colors.grey.shade200,
                                         image: DecorationImage(
                                             image: AssetImage(
                                                 'assets/images/${i + 1}.png'),
-                                            scale: 10),
-                                        shape: BoxShape.circle),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    people[i],
-                                  )
-                                ],
-                              ),
+                                            scale: 10,
+                                            fit: BoxFit.contain),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: isOnline
+                                              ? Colors.green
+                                              : Colors.grey,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 5),
+                                Text(
+                                  people[i],
+                                ),
+                              ],
                             ),
-                          );
-                        }),
+                          ),
+                        );
+                      },
+                    ),
                   ),
 
                   const Divider(),
@@ -157,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: Image.asset(
-                                    "assets/images/${index + 1}.png"),
+                                    "assets/images/${index + 1}.png",),
                               ),
                             ),
                             title: Text(
@@ -178,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                                 const SizedBox(height: 5),
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: [                                   
+                                  children: [
                                     Container(
                                       width: 15,
                                       height: 15,

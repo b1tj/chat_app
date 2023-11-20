@@ -1,3 +1,4 @@
+import 'package:chat_app/Screens/home_screen/chat_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,9 +12,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<String> people = [
-    'Colt',
+    'Messi',
     'Vinh',
-    'Neeta',
+    'Ronaldo',
     'Sarah',
     'Natasha',
     'Robert',
@@ -60,37 +61,98 @@ class _HomePageState extends State<HomePage> {
               Column(
                 children: [
                   Container(
+                      height: 58,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                      child: CupertinoTextField(
+                        placeholder: 'Search',
+                        prefix: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Icon(Icons.search,
+                              color: Color.fromARGB(66, 0, 0, 0)),
+                        ),
+                        placeholderStyle:
+                            TextStyle(color: Color.fromARGB(66, 0, 0, 0)),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            style: BorderStyle.none,
+                          ),
+                          color: Color.fromARGB(255, 235, 234, 234),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      )),
+                  Container(
                     height: 100,
                     child: ListView.builder(
-                        itemCount: people.length,
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, int i) {
-                          return Padding(
+                      itemCount: people.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, int i) {
+                        bool isOnline =
+                            true; // Replace with the actual online status of the user
+
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to chat detail screen when user is tapped
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute<void>(
+                                builder: (BuildContext context) =>
+                                    ChatDetailsScreen(i + 1, people[i]),
+                              ),
+                            );
+                          },
+                          child: Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 8, vertical: 5),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Container(
-                                  height: 60,
-                                  width: 60,
-                                  decoration: BoxDecoration(
-                                      color: Colors.grey.shade200,
-                                      image: DecorationImage(
-                                          image: AssetImage(
-                                              'assets/images/${i + 1}.png'),
-                                          scale: 10),
-                                      shape: BoxShape.circle),
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 60,
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                'assets/images/${i + 1}.png'),
+                                            scale: 10,
+                                            fit: BoxFit.contain),
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: isOnline
+                                              ? Colors.green
+                                              : Colors.grey,
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 5),
                                 Text(
                                   people[i],
-                                )
+                                ),
                               ],
                             ),
-                          );
-                        }),
+                          ),
+                        );
+                      },
+                    ),
                   ),
 
                   const Divider(),
@@ -105,15 +167,14 @@ class _HomePageState extends State<HomePage> {
                           padding: const EdgeInsets.all(0.0),
                           child: ListTile(
                             onTap: () {
-                              // Navigator.push(
-                              // 	context,
-                              // 	MaterialPageRoute<void>(
-                              // 		builder: (BuildContext context) => ChatDetailsScreen(
-                              // 			index + 1,
-                              // 			people[index]
-                              // 		),
-                              // 	),
-                              // );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute<void>(
+                                  builder: (BuildContext context) =>
+                                      ChatDetailsScreen(
+                                          index + 1, people[index]),
+                                ),
+                              );
                             },
                             leading: Container(
                               decoration: BoxDecoration(
@@ -123,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: Image.asset(
-                                    "assets/images/${index + 1}.png"),
+                                    "assets/images/${index + 1}.png",),
                               ),
                             ),
                             title: Text(
@@ -132,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             subtitle: const Text(
-                              "blabalbalablabla 🔥 ...",
+                              "New message 🔥 ...",
                             ),
                             trailing: Column(
                               children: [
@@ -145,12 +206,6 @@ class _HomePageState extends State<HomePage> {
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(
-                                      CupertinoIcons.pin_fill,
-                                      size: 15,
-                                      color: Colors.grey,
-                                    ),
-                                    const SizedBox(width: 5),
                                     Container(
                                       width: 15,
                                       height: 15,

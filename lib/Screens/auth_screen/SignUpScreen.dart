@@ -53,7 +53,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           _showAlertDialog(context, "Đăng ký thành công!", "Welcome");
         }
       } on FirebaseAuthException catch (e) {
-        print(e);
         if (context.mounted) {
           _showAlertDialog(context, e.message.toString(), e.code);
         }

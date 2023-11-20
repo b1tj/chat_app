@@ -1,3 +1,4 @@
+import 'package:chat_app/Screens/more_screen/more_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -13,7 +14,7 @@ class BottomBarScreen extends StatefulWidget {
 class _BottomBarScreenState extends State<BottomBarScreen> {
   int _selectedIndex = 1;
 
-  final pages = const [Text('Chats'), HomePage(), Text('More')];
+  final pages = const [Text('Chats'), HomePage(), MoreScreen()];
 
   void _onItemTapped(int index) {
     setState(() {

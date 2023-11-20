@@ -1,14 +1,30 @@
+import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MoreScreen extends StatefulWidget {
-  const MoreScreen({super.key});
+  MoreScreen({Key? key});
+
+  void signUserOut(BuildContext context) async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => SignInScreen1()),
+      (route) => false,
+    );
+  }
 
   @override
   State<MoreScreen> createState() => _MoreScreenState();
 }
 
 class _MoreScreenState extends State<MoreScreen> {
+  final user = FirebaseAuth.instance.currentUser!;
+  final _userStream =
+      FirebaseFirestore.instance.collection('users').snapshots();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +33,7 @@ class _MoreScreenState extends State<MoreScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         bottomOpacity: 0,
-        title: const Padding(
+        title: Padding(
           padding: EdgeInsets.only(left: 10, bottom: 13),
           child: Text('More'),
         ),
@@ -43,19 +59,46 @@ class _MoreScreenState extends State<MoreScreen> {
                     fit: BoxFit.scaleDown,
                   ),
                 ),
-                const Padding(
+                Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '${'User'}',
-                        style: TextStyle(
-                            fontSize: 14, fontWeight: FontWeight.bold),
+                      StreamBuilder(
+                        stream: _userStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return const Text("Connection error!");
+                          }
+
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Text("Loading...");
+                          }
+
+                          var querySnapshot = snapshot.data
+                              as QuerySnapshot<Map<String, dynamic>>?;
+
+                          if (querySnapshot != null &&
+                              querySnapshot.docs.isNotEmpty) {
+                            var userData = querySnapshot.docs.first.data();
+                            var fullName = userData['fullName'] ?? 'No Name';
+
+                            return Text(
+                              fullName,
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          } else {
+                            return const Text("No user data");
+                          }
+                        },
                       ),
                       SizedBox(height: 8),
                       Text(
-                        'user123@gmail.com',
+                        user.email!,
                         style: TextStyle(
                           color: Color(0xFFADB5BD),
                           fontSize: 12,
@@ -64,7 +107,7 @@ class _MoreScreenState extends State<MoreScreen> {
                     ],
                   ),
                 ),
-                const Flexible(
+                Flexible(
                   flex: 1,
                   fit: FlexFit.tight,
                   child: SizedBox(),
@@ -74,7 +117,7 @@ class _MoreScreenState extends State<MoreScreen> {
                 )
               ],
             ),
-            const SizedBox(
+            SizedBox(
               height: 32,
             ),
             for (int i = 0; i < itemList.length; i++) ...[
@@ -91,11 +134,11 @@ class _MoreScreenState extends State<MoreScreen> {
                           itemList[i].icon ?? '',
                         ),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         width: 6,
                       ),
                       Text(itemList[i].title ?? ''),
-                      const Flexible(
+                      Flexible(
                         flex: 1,
                         fit: FlexFit.tight,
                         child: SizedBox(),
@@ -106,15 +149,18 @@ class _MoreScreenState extends State<MoreScreen> {
                 ),
               )
             ],
-            const SizedBox(height: 12),
-            const Divider(
+            SizedBox(height: 12),
+            Divider(
               thickness: 1.2,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8),
             for (int i = 0; i < partialItemList.length; i++) ...[
               InkWell(
-                // Logout logic
-                onTap: () {},
+                onTap: () {
+                  if (partialItemList[i].title == 'Logout') {
+                    widget.signUserOut(context);
+                  }
+                },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Row(
@@ -129,11 +175,11 @@ class _MoreScreenState extends State<MoreScreen> {
                           fit: BoxFit.scaleDown,
                         ),
                       ),
-                      const SizedBox(
+                      SizedBox(
                         width: 6,
                       ),
                       Text(partialItemList[i].title ?? ''),
-                      const Flexible(
+                      Flexible(
                         flex: 1,
                         fit: FlexFit.tight,
                         child: SizedBox(),
@@ -152,10 +198,10 @@ class _MoreScreenState extends State<MoreScreen> {
 }
 
 class ItemEntity {
-  String? icon;
-  String? title;
+  final String icon;
+  final String title;
 
-  ItemEntity({this.icon, this.title});
+  ItemEntity({required this.icon, required this.title});
 }
 
 List<ItemEntity> itemList = [

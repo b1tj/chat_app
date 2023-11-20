@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.grey),
       color: Colors.black,
-      home: isLogin ? const BottomBarScreen() : const WelcomeScreen(),
+      home: isLogin ?  BottomBarScreen() :  WelcomeScreen(),
     );
   }
 }

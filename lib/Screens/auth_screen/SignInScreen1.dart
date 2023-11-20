@@ -27,42 +27,39 @@ class _SignInScreen1State extends State<SignInScreen1> {
   bool _isPasswordHidden = true;
 
   Future<void> _handleSignIn() async {
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      try {
-        setState(() {
-          _isLoading = true;
-        });
+  if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
 
-        UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-          email: _email,
-          password: _password,
-        );
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _email,
+        password: _password,
+      );
 
-        print("${userCredential.user!.email}");
+      print("${userCredential.user!.email}");
 
-        _showAlertDialog(context, "Đăng nhập thành công", "Welcome");
+      final SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      sharedPreferences.setString('_email', _emailController.text);
+      sharedPreferences.setString('_password', _passwordController.text);
 
-        final SharedPreferences sharedPreferences =
-            await SharedPreferences.getInstance();
-        sharedPreferences.setString('_email', _emailController.text);
-        sharedPreferences.setString('_password', _passwordController.text);
+      await Future.delayed(Duration(seconds: 3));
 
-        await Future.delayed(Duration(seconds: 3));
-
-        Navigator.pop(context);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => BottomBarScreen()),
-        );
-      } on FirebaseAuthException catch (e) {
-        print(e);
-        _showAlertDialog(context, e.message.toString(), e.code);
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => BottomBarScreen()),
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      _showAlertDialog(context, e.message.toString(), e.code);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +275,7 @@ class _SignInScreen1State extends State<SignInScreen1> {
   }
 
   void _showAlertDialog(BuildContext context, String err, String errCode) {
+  if (mounted) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (BuildContext context) => CupertinoAlertDialog(
@@ -295,4 +293,6 @@ class _SignInScreen1State extends State<SignInScreen1> {
       ),
     );
   }
+}
+
 }

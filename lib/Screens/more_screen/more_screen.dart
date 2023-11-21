@@ -1,4 +1,5 @@
 import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/Screens/more_screen/update_screen/update_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,19 +28,15 @@ class MoreScreen extends StatefulWidget {
         content: Text(content),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
-            isDefaultAction: true,
+            textStyle: TextStyle(color: Colors.blue),
             onPressed: () {
               Navigator.pop(context);
+              signUserOut(context);
             },
-            child: TextButton(
-              onPressed: () {
-                signUserOut(context);
-              },
-              child: Text("OK"),
-            ),
+            child: const Text("OK"),
           ),
           CupertinoDialogAction(
-            isDefaultAction: true,
+            textStyle: TextStyle(color: Colors.red),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -94,50 +91,60 @@ class _MoreScreenState extends State<MoreScreen> {
                     fit: BoxFit.scaleDown,
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      StreamBuilder(
-                        stream: _userStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return const Text("Connection error!");
-                          }
-
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Text("Loading...");
-                          }
-
-                          var docSnapshot = snapshot.data
-                              as DocumentSnapshot<Map<String, dynamic>>?;
-
-                          if (docSnapshot != null && docSnapshot.exists) {
-                            var fullName = docSnapshot.get("fullName");
-
-                            return Text(
-                              fullName,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            );
-                          } else {
-                            return const Text("No user data");
-                          }
-                        },
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UpdateScreen(),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        user.email!,
-                        style: TextStyle(
-                          color: Color(0xFFADB5BD),
-                          fontSize: 12,
+                    );
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        StreamBuilder(
+                          stream: _userStream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return const Text("Connection error!");
+                            }
+
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Text("Loading...");
+                            }
+
+                            var docSnapshot = snapshot.data
+                                as DocumentSnapshot<Map<String, dynamic>>?;
+
+                            if (docSnapshot != null && docSnapshot.exists) {
+                              var fullName = docSnapshot.get("fullName");
+
+                              return Text(
+                                fullName,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              );
+                            } else {
+                              return const Text("No user data");
+                            }
+                          },
                         ),
-                      )
-                    ],
+                        SizedBox(height: 8),
+                        Text(
+                          user.email!,
+                          style: TextStyle(
+                            color: Color(0xFFADB5BD),
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Flexible(
@@ -191,7 +198,8 @@ class _MoreScreenState extends State<MoreScreen> {
               InkWell(
                 onTap: () {
                   if (partialItemList[i].title == 'Logout') {
-                    widget.showAlertDialog(context, "Xác nhận đăng xuất ?", "");
+                    widget.showAlertDialog(
+                        context, "Xác nhận", "Bạn có muốn đăng xuất ?");
                   }
                 },
                 child: Padding(

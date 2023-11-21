@@ -6,10 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:chat_app/Screens/home_screen/home_page.dart';
 
 class BottomBarScreen extends StatefulWidget {
-
   BottomBarScreen({super.key});
-
-  
 
   @override
   State<BottomBarScreen> createState() => _BottomBarScreenState();
@@ -18,7 +15,7 @@ class BottomBarScreen extends StatefulWidget {
 class _BottomBarScreenState extends State<BottomBarScreen> {
   int _selectedIndex = 1;
 
-  final pages =  [Text('Chats a'), HomePage(), MoreScreen()];
+  final pages = [Text('Chats a'), HomePage(), MoreScreen()];
 
   void _onItemTapped(int index) {
     setState(() {

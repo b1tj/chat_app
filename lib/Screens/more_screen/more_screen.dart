@@ -1,6 +1,7 @@
 import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -9,10 +10,43 @@ class MoreScreen extends StatefulWidget {
 
   void signUserOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => SignInScreen1()),
-      (route) => false,
+    if (context.mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const SignInScreen1()),
+        (route) => false,
+      );
+    }
+  }
+
+  void showAlertDialog(BuildContext context, String title, String content) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: <CupertinoDialogAction>[
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: TextButton(
+              onPressed: () {
+                signUserOut(context);
+              },
+              child: Text("OK"),
+            ),
+          ),
+          CupertinoDialogAction(
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("Cancel"),
+          )
+        ],
+      ),
     );
   }
 
@@ -22,8 +56,9 @@ class MoreScreen extends StatefulWidget {
 
 class _MoreScreenState extends State<MoreScreen> {
   final user = FirebaseAuth.instance.currentUser!;
-  final _userStream =
-      FirebaseFirestore.instance.collection('users').snapshots();
+  late Stream<DocumentSnapshot> _userStream =
+      FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots();
+  final db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -76,17 +111,15 @@ class _MoreScreenState extends State<MoreScreen> {
                             return const Text("Loading...");
                           }
 
-                          var querySnapshot = snapshot.data
-                              as QuerySnapshot<Map<String, dynamic>>?;
+                          var docSnapshot = snapshot.data
+                              as DocumentSnapshot<Map<String, dynamic>>?;
 
-                          if (querySnapshot != null &&
-                              querySnapshot.docs.isNotEmpty) {
-                            var userData = querySnapshot.docs.first.data();
-                            var fullName = userData['fullName'] ?? 'No Name';
+                          if (docSnapshot != null && docSnapshot.exists) {
+                            var fullName = docSnapshot.get("fullName");
 
                             return Text(
                               fullName,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -131,13 +164,13 @@ class _MoreScreenState extends State<MoreScreen> {
                         width: 24,
                         height: 24,
                         child: SvgPicture.asset(
-                          itemList[i].icon ?? '',
+                          itemList[i].icon,
                         ),
                       ),
                       SizedBox(
                         width: 6,
                       ),
-                      Text(itemList[i].title ?? ''),
+                      Text(itemList[i].title),
                       Flexible(
                         flex: 1,
                         fit: FlexFit.tight,
@@ -158,7 +191,7 @@ class _MoreScreenState extends State<MoreScreen> {
               InkWell(
                 onTap: () {
                   if (partialItemList[i].title == 'Logout') {
-                    widget.signUserOut(context);
+                    widget.showAlertDialog(context, "Xác nhận đăng xuất ?", "");
                   }
                 },
                 child: Padding(
@@ -169,7 +202,7 @@ class _MoreScreenState extends State<MoreScreen> {
                         width: 24,
                         height: 24,
                         child: SvgPicture.asset(
-                          partialItemList[i].icon ?? '',
+                          partialItemList[i].icon,
                           width: 24,
                           height: 24,
                           fit: BoxFit.scaleDown,
@@ -178,7 +211,7 @@ class _MoreScreenState extends State<MoreScreen> {
                       SizedBox(
                         width: 6,
                       ),
-                      Text(partialItemList[i].title ?? ''),
+                      Text(partialItemList[i].title),
                       Flexible(
                         flex: 1,
                         fit: FlexFit.tight,

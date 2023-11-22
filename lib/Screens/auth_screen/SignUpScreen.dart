@@ -1,5 +1,5 @@
-import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
-import 'package:chat_app/Screens/home_screen/home_page.dart';
+import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/screens/home_screen/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -27,7 +27,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _isLoading = false;
   bool _isPasswordHidden = true;
 
-
   Future<void> _handleSignUp() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       try {
@@ -46,8 +45,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
           "email": _email,
           "fullName": _fullName,
         });
-
-        print("${userCredential.user!.email}");
 
         if (context.mounted) {
           _showAlertDialog(context, "Đăng ký thành công!", "Welcome");
@@ -139,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }
                           return null;
                         },
-                         onChanged: (value) {
+                        onChanged: (value) {
                           setState(() {
                             _fullName = value;
                           });

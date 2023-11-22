@@ -1,9 +1,9 @@
-import 'package:chat_app/Screens/more_screen/more_screen.dart';
+import 'package:chat_app/screens/more_screen/more_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:chat_app/Screens/home_screen/home_page.dart';
+import 'package:chat_app/screens/home_screen/home_page.dart';
 
 class BottomBarScreen extends StatefulWidget {
   BottomBarScreen({super.key});

@@ -1,4 +1,4 @@
-import 'package:chat_app/Screens/home_screen/chat_detail_screen.dart';
+import 'package:chat_app/screens/home_screen/chat_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -184,7 +184,8 @@ class _HomePageState extends State<HomePage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(6.0),
                                 child: Image.asset(
-                                    "assets/images/${index + 1}.png",),
+                                  "assets/images/${index + 1}.png",
+                                ),
                               ),
                             ),
                             title: Text(

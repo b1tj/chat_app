@@ -75,32 +75,32 @@ class _MoreScreenState extends State<MoreScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: <Widget>[
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Color(0xFFECECEC),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UpdateScreen(),
                   ),
-                  child: SvgPicture.asset(
-                    'assets/vectors/ic_user_avatar.svg',
-                    width: 20,
-                    height: 20,
-                    fit: BoxFit.scaleDown,
+                );
+              },
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      color: Color(0xFFECECEC),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/vectors/ic_user_avatar.svg',
+                      width: 20,
+                      height: 20,
+                      fit: BoxFit.scaleDown,
+                    ),
                   ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const UpdateScreen(),
-                      ),
-                    );
-                  },
-                  child: Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,16 +146,17 @@ class _MoreScreenState extends State<MoreScreen> {
                       ],
                     ),
                   ),
-                ),
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.tight,
-                  child: SizedBox(),
-                ),
-                Container(
-                  child: SvgPicture.asset('assets/vectors/ic_arrow_right.svg'),
-                )
-              ],
+                  Flexible(
+                    flex: 1,
+                    fit: FlexFit.tight,
+                    child: SizedBox(),
+                  ),
+                  Container(
+                    child:
+                        SvgPicture.asset('assets/vectors/ic_arrow_right.svg'),
+                  )
+                ],
+              ),
             ),
             SizedBox(
               height: 32,

@@ -1,5 +1,13 @@
+<<<<<<< HEAD
 import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
 import 'package:chat_app/screens/home_screen/home_page.dart';
+=======
+
+import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/Screens/auth_screen/StepUploadAvatar.dart';
+import 'package:chat_app/Screens/home_screen/home_page.dart';
+import 'package:chat_app/models/UsersModel.dart';
+>>>>>>> f1a6d51c68ca8f7b425cf10451dbd2a5174fb9c4
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -40,15 +48,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
           password: _password,
         );
 
-        _firestore.collection("users").doc(userCredential.user!.uid).set({
-          "uid": userCredential.user!.uid,
-          "email": _email,
-          "fullName": _fullName,
-        });
+        String uid = userCredential.user!.uid;
+        UserModel newUser = UserModel(
+            uid: uid, email: _email, fullName: _fullName, profilePic: "");
 
+<<<<<<< HEAD
         if (context.mounted) {
           _showAlertDialog(context, "Đăng ký thành công!", "Welcome");
         }
+=======
+        await _firestore.collection("users").doc(uid).set(newUser.toMap());
+
+        print("Đăng kí thành công: ${userCredential.user!.email}");
+
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return UploadAvatar(
+              userModel: newUser, FirebaseUser: userCredential!.user!);
+        }));
+
+        // if (context.mounted) {
+        //   _showAlertDialog(context, "Đăng ký thành công!", "Welcome");
+        // }
+>>>>>>> f1a6d51c68ca8f7b425cf10451dbd2a5174fb9c4
       } on FirebaseAuthException catch (e) {
         if (context.mounted) {
           _showAlertDialog(context, e.message.toString(), e.code);

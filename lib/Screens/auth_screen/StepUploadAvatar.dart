@@ -11,9 +11,11 @@ import 'package:image_picker/image_picker.dart';
 
 class UploadAvatar extends StatefulWidget {
   final UserModel userModel;
-  final User FirebaseUser;
+  final User FireBaseUser;
 
-  const UploadAvatar({Key? key, required this.userModel, required this.FirebaseUser}) : super(key: key);
+  const UploadAvatar(
+      {Key? key, required this.userModel, required this.FireBaseUser})
+      : super(key: key);
 
   @override
   State<UploadAvatar> createState() => _UploadAvatarState();
@@ -45,7 +47,8 @@ class _UploadAvatarState extends State<UploadAvatar> {
               ListTile(
                 onTap: () {
                   selectImage(ImageSource.gallery);
-                  Navigator.pop(context); // Close the dialog after selecting an option
+                  Navigator.pop(
+                      context); // Close the dialog after selecting an option
                 },
                 leading: Icon(Icons.photo),
                 title: Text("Select from Gallery"),
@@ -53,7 +56,8 @@ class _UploadAvatarState extends State<UploadAvatar> {
               ListTile(
                 onTap: () {
                   selectImage(ImageSource.camera);
-                  Navigator.pop(context); // Close the dialog after selecting an option
+                  Navigator.pop(
+                      context); // Close the dialog after selecting an option
                 },
                 leading: Icon(Icons.camera),
                 title: Text("Take a photo"),
@@ -66,44 +70,51 @@ class _UploadAvatarState extends State<UploadAvatar> {
   }
 
   void uploadData() async {
-  try {
-    if (imageFile == null || isUploading) {
-      // No image selected or already uploading
-      return;
+    try {
+      if (imageFile == null || isUploading) {
+        // No image selected or already uploading
+        return;
+      }
+
+      setState(() {
+        isUploading = true; // Set loading state to true
+      });
+
+      String fileName =
+          "${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child("user_avatars/$fileName");
+
+      // Upload the file to Firebase Storage
+      await storageReference.putFile(imageFile!);
+
+      // Get the download URL of the uploaded file
+      String downloadURL = await storageReference.getDownloadURL();
+
+      // Update the user's avatar URL in Firestore
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.FireBaseUser.uid)
+          .update({"profilePic": downloadURL});
+
+      // Navigate to the bottom bar screen and remove the UploadAvatar screen from the stack
+      if (context.mounted) {
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => BottomBarScreen(),
+          ),
+          (route) => false,
+        );
+      }
+    } catch (error) {
+      print("Error uploading image: $error");
+    } finally {
+      setState(() {
+        isUploading =
+            false; // Set loading state to false, whether success or failure
+      });
     }
-
-    setState(() {
-      isUploading = true; // Set loading state to true
-    });
-
-    String fileName = "${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
-    Reference storageReference = FirebaseStorage.instance.ref().child("user_avatars/$fileName");
-
-    // Upload the file to Firebase Storage
-    await storageReference.putFile(imageFile!);
-
-    // Get the download URL of the uploaded file
-    String downloadURL = await storageReference.getDownloadURL();
-
-    // Update the user's avatar URL in Firestore
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(widget.FirebaseUser.uid)
-        .update({"profilePic": downloadURL});
-
-    // Navigate to the bottom bar screen and remove the UploadAvatar screen from the stack
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => BottomBarScreen()),
-    );
-  } catch (error) {
-    print("Error uploading image: $error");
-  } finally {
-    setState(() {
-      isUploading = false; // Set loading state to false, whether success or failure
-    });
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -128,43 +139,45 @@ class _UploadAvatarState extends State<UploadAvatar> {
                     ),
                   ],
                 ),
-                Stack(
-                  children: [
-                    Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 5, color: Colors.white),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                              spreadRadius: 2,
-                              blurRadius: 10,
-                              color: Colors.black.withOpacity(0.3))
-                        ],
+                GestureDetector(
+                  onTap: () {
+                    showPhotoOptions();
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: 200,
+                        height: 200,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 5, color: Colors.white),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                                spreadRadius: 2,
+                                blurRadius: 10,
+                                color: Colors.black.withOpacity(0.3))
+                          ],
+                        ),
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundImage: (imageFile != null)
+                              ? FileImage(imageFile!)
+                              : null,
+                          child: (imageFile == null)
+                              ? SvgPicture.asset(
+                                  "assets/vectors/ic_user_avatar.svg",
+                                  height: 80,
+                                )
+                              : null,
+                        ),
                       ),
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundImage: (imageFile != null) ? FileImage(imageFile!) : null,
-                        child: (imageFile == null)
-                            ? SvgPicture.asset(
-                          "assets/vectors/ic_user_avatar.svg",
-                          height: 80,
-                        )
-                            : null,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      right: 10,
-                      child: GestureDetector(
-                        onTap: () {
-                          showPhotoOptions();
-                        },
+                      Positioned(
+                        bottom: 10,
+                        right: 10,
                         child: Icon(Icons.add_a_photo, size: 35),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
                 SizedBox(height: 20),
                 Padding(

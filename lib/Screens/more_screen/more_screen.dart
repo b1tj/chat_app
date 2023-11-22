@@ -1,5 +1,5 @@
-import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
-import 'package:chat_app/Screens/more_screen/update_screen/update_screen.dart';
+import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/screens/more_screen/update_screen/update_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';

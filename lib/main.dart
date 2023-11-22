@@ -1,9 +1,8 @@
-
-import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
-import 'package:chat_app/Screens/auth_screen/StepUploadAvatar.dart';
-import 'package:chat_app/Screens/bottom_bar_screen/bottom_bar_screen.dart';
-import 'package:chat_app/Screens/home_screen/home_page.dart';
-import 'package:chat_app/Screens/splash_screen/splash_screen.dart';
+import 'package:chat_app/screens/auth_screen/SignInScreen.dart';
+import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/screens/bottom_bar_screen/bottom_bar_screen.dart';
+import 'package:chat_app/screens/home_screen/home_page.dart';
+import 'package:chat_app/screens/splash_screen/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -58,7 +57,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.grey),
       color: Colors.black,
-      home: isLogin ?  BottomBarScreen() :  WelcomeScreen(),
+      home: isLogin ? BottomBarScreen() : WelcomeScreen(),
     );
   }
 }

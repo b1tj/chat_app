@@ -1,6 +1,5 @@
 import 'package:chat_app/Screens/auth_screen/SignUpScreen.dart';
 import 'package:chat_app/Screens/bottom_bar_screen/bottom_bar_screen.dart';
-import 'package:chat_app/Screens/home_screen/home_page.dart';
 import 'package:chat_app/models/UsersModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';

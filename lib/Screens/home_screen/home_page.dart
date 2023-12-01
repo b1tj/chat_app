@@ -1,3 +1,4 @@
+import 'package:chat_app/Screens/home_screen/NewMessageScreen.dart';
 import 'package:chat_app/screens/home_screen/chat_detail_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +49,19 @@ class _HomePageState extends State<HomePage> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 24),
-              child: SvgPicture.asset('assets/vectors/ic_new_message.svg'),
+              child: GestureDetector(
+                onTap: () {
+                  // Add your logic for new message button press here
+                  // For example, navigate to a new message screen
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => NewMessageScreen(),
+                    ),
+                  );
+                },
+                child: SvgPicture.asset('assets/vectors/ic_new_message.svg'),
+              ),
             )
           ],
         ),

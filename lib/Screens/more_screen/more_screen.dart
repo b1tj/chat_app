@@ -1,3 +1,5 @@
+import 'package:chat_app/globals/global_data.dart';
+import 'package:chat_app/models/UsersModel.dart';
 import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
 import 'package:chat_app/screens/more_screen/update_screen/update_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,10 +54,11 @@ class MoreScreen extends StatefulWidget {
 }
 
 class _MoreScreenState extends State<MoreScreen> {
-  final user = FirebaseAuth.instance.currentUser!;
-  late Stream<DocumentSnapshot> _userStream =
-      FirebaseFirestore.instance.collection('users').doc(user.uid).snapshots();
-  final db = FirebaseFirestore.instance;
+  final User user = FirebaseAuth.instance.currentUser!;
+  final Stream<DocumentSnapshot> _userStream = FirebaseFirestore.instance
+      .collection('users')
+      .doc(GlobalData.user!.uid)
+      .snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -86,19 +89,65 @@ class _MoreScreenState extends State<MoreScreen> {
               },
               child: Row(
                 children: <Widget>[
-                  Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Color(0xFFECECEC),
-                    ),
-                    child: SvgPicture.asset(
-                      'assets/vectors/ic_user_avatar.svg',
-                      width: 20,
-                      height: 20,
-                      fit: BoxFit.scaleDown,
-                    ),
+                  StreamBuilder(
+                    stream: _userStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return const Text("Connection error!");
+                      }
+
+                      var docSnapshot = snapshot.data
+                          as DocumentSnapshot<Map<String, dynamic>>?;
+
+                      if (docSnapshot != null && docSnapshot.exists) {
+                        var imgURL = docSnapshot.get("profilePic").toString();
+
+                        return Container(
+                            width: 50,
+                            height: 50,
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Color(0xFFECECEC),
+                            ),
+                            child: imgURL != ''
+                                ? Image.network(
+                                    imgURL,
+                                    width: 20,
+                                    height: 20,
+                                    fit: BoxFit.fill,
+                                  )
+                                : Container(
+                                    width: 50,
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Color(0xFFECECEC),
+                                    ),
+                                    child: SvgPicture.asset(
+                                      'assets/vectors/ic_user_avatar.svg',
+                                      width: 20,
+                                      height: 20,
+                                      fit: BoxFit.scaleDown,
+                                    ),
+                                  ));
+                      } else {
+                        return Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            color: Color(0xFFECECEC),
+                          ),
+                          child: SvgPicture.asset(
+                            'assets/vectors/ic_user_avatar.svg',
+                            width: 20,
+                            height: 20,
+                            fit: BoxFit.scaleDown,
+                          ),
+                        );
+                      }
+                    },
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),

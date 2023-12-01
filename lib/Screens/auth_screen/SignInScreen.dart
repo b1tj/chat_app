@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../globals/global_data.dart';
 
 import 'package:chat_app/screens/home_screen/home_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,12 +38,14 @@ class _SignInScreenState extends State<SignInScreen> {
             await SharedPreferences.getInstance();
         sharedPreferences.setString('_email', _emailController.text);
         sharedPreferences.setString('_password', _passwordController.text);
-        Navigator.pop(context);
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ),
-        );
+        if (context.mounted) {
+          Navigator.pop(context);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const HomePage(),
+            ),
+          );
+        }
       }
     } on FirebaseAuthException catch (e) {
       if (context.mounted) {

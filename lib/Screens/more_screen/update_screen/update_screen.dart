@@ -1,5 +1,12 @@
+import 'dart:io';
+
+import 'package:chat_app/globals/global_data.dart';
+import 'package:chat_app/models/UsersModel.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 class UpdateScreen extends StatefulWidget {
   const UpdateScreen({super.key});
@@ -10,6 +17,89 @@ class UpdateScreen extends StatefulWidget {
 
 class _UpdateScreenState extends State<UpdateScreen> {
   bool isObscure = true;
+  File? imageFile;
+  bool isUploading = false; // New variable to track the upload state
+
+  void selectImage(ImageSource source) async {
+    final pickedFile = await ImagePicker().pickImage(source: source);
+
+    setState(() {
+      if (pickedFile != null) {
+        imageFile = File(pickedFile.path);
+      }
+    });
+  }
+
+  void showPhotoOptions() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Upload Profile Picture"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                onTap: () {
+                  selectImage(ImageSource.gallery);
+                  // Close the dialog after selecting an option
+                  Navigator.pop(context);
+                },
+                leading: Icon(Icons.photo),
+                title: Text("Select from Gallery"),
+              ),
+              ListTile(
+                onTap: () {
+                  selectImage(ImageSource.camera);
+                  // Close the dialog after selecting an option
+                  Navigator.pop(context);
+                },
+                leading: Icon(Icons.camera),
+                title: Text("Take a photo"),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void uploadData() async {
+    try {
+      if (imageFile == null || isUploading) {
+        // No image selected or already uploading
+        return;
+      }
+
+      setState(() {
+        isUploading = true; // Set loading state to true
+      });
+
+      String fileName =
+          "${DateTime.now().millisecondsSinceEpoch.toString()}.jpg";
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child("user_avatars/$fileName");
+
+      // Upload the file to Firebase Storage
+      await storageReference.putFile(imageFile!);
+
+      // Get the download URL of the uploaded file
+      String downloadURL = await storageReference.getDownloadURL();
+
+      // Update the user's avatar URL in Firestore
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(GlobalData.user!.uid)
+          .update({"profilePic": downloadURL});
+    } catch (error) {
+      print("Error uploading image: $error");
+    } finally {
+      setState(() {
+        // Set loading state to false, whether success or failure
+        isUploading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,17 +133,10 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       )
                     ],
                     image: DecorationImage(
-                      image: AssetImage('assets/images/1.png'),
+                      image: NetworkImage(GlobalData.userData!['profilePic']),
+                      fit: BoxFit.fill,
                     ),
                   ),
-                  //Xử lý logic hiển thị ảnh mặc định nếu user không có ảnh sẵn
-
-                  // child: SvgPicture.asset(
-                  //   'assets/vectors/ic_user_avatar.svg',
-                  //   width: 30,
-                  //   height: 30,
-                  //   fit: BoxFit.cover,
-                  // ),
                 ),
                 Positioned(
                   bottom: 4,

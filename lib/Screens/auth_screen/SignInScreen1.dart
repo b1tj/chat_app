@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../globals/global_data.dart';
 
 class SignInScreen1 extends StatefulWidget {
   const SignInScreen1({Key? key});
@@ -40,16 +41,26 @@ class _SignInScreen1State extends State<SignInScreen1> {
           email: _email,
           password: _password,
         );
-
-        print("${userCredential.user!.email}");
         String uid = userCredential.user!.uid;
+
+        //Gán global data
+        GlobalData.user = userCredential.user;
 
         DocumentSnapshot userData =
             await _firestore.collection('users').doc(uid).get();
+
+        GlobalData.db
+            .collection('users')
+            .doc(uid)
+            .get()
+            .then((DocumentSnapshot docSnapshot) {
+          if (docSnapshot.exists) {
+            GlobalData.userData = docSnapshot.data() as Map<String, dynamic>;
+          }
+        });
+
         UserModel userModel =
             UserModel.fromMap(userData.data() as Map<String, dynamic>);
-
-        print("Đăng nhập thành công");
 
         final SharedPreferences sharedPreferences =
             await SharedPreferences.getInstance();

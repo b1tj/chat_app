@@ -1,4 +1,6 @@
+import 'package:chat_app/globals/global_data.dart';
 import 'package:chat_app/screens/more_screen/more_screen.dart';
+import 'package:chat_app/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -21,6 +23,15 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  //Get user data and current user if user has logged in
+  @override
+  void initState() {
+    GlobalData.user = Utils.getCurrentUser();
+    GlobalData.uid = GlobalData.user!.uid;
+    GlobalData.userData = Utils.getUserData(GlobalData.uid);
+    super.initState();
   }
 
   @override

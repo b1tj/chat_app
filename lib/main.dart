@@ -1,7 +1,7 @@
-import 'package:chat_app/screens/auth_screen/SignInScreen.dart';
+
 import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
 import 'package:chat_app/screens/bottom_bar_screen/bottom_bar_screen.dart';
-import 'package:chat_app/screens/home_screen/home_page.dart';
+
 import 'package:chat_app/screens/splash_screen/splash_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                 stream: FirebaseFirestore.instance
                     .collection("chatRooms")
                     .where("participants.${GlobalData.uid}", isEqualTo: true)
-                    .orderBy("lastTime", descending: true)
+                    // .orderBy("lastTime", descending: true)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {

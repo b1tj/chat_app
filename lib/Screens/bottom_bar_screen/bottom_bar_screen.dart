@@ -28,9 +28,9 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
   //Get user data and current user if user has logged in
   @override
   void initState() {
+    Utils.getUserData(GlobalData.auth.currentUser?.uid);
     GlobalData.user = Utils.getCurrentUser();
     GlobalData.uid = GlobalData.user!.uid;
-    GlobalData.userData = Utils.getUserData(GlobalData.uid);
     super.initState();
   }
 

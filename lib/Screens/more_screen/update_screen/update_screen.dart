@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdateScreen extends StatefulWidget {
@@ -19,6 +20,25 @@ class _UpdateScreenState extends State<UpdateScreen> {
   bool isObscure = true;
   File? imageFile;
   bool isUploading = false; // New variable to track the upload state
+  // final userData = UserModel(fullName: GlobalData.userData['fullName'], )
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
+  // final userData = UserModel(
+  //     uid: GlobalData.uid,
+  //     email: GlobalData.userData!['email'],
+  //     fullName: GlobalData.userData!['fullName'],
+  //     profilePic: GlobalData.userData!['profilePic']);
+
+  @override
+  void initState() {
+    FocusManager.instance.primaryFocus?.unfocus();
+    fullNameController.text = GlobalData.userData.fullName;
+    super.initState();
+  }
 
   void selectImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -103,68 +123,161 @@ class _UpdateScreenState extends State<UpdateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
+    return GestureDetector(
+      onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        elevation: 1,
-        bottomOpacity: 0,
-        title: Text('Update Info'),
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            SizedBox(height: 50),
-            Stack(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(16),
-                  width: 130,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 4, color: Colors.white),
-                    shape: BoxShape.circle,
-                    color: Color(0xFFECECEC),
-                    boxShadow: [
-                      BoxShadow(
-                        spreadRadius: 2,
-                        blurRadius: 10,
-                        color: Colors.black.withOpacity(0.2),
-                      )
-                    ],
-                    image: DecorationImage(
-                      image: NetworkImage(GlobalData.userData!['profilePic']),
-                      fit: BoxFit.fill,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 1,
+          bottomOpacity: 0,
+          title: Text('Update Info'),
+        ),
+        body: Center(
+          child: Column(
+            children: [
+              SizedBox(height: 50),
+              InkWell(
+                onTap: () {
+                  showPhotoOptions();
+                },
+                child: Stack(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(16),
+                      width: 130,
+                      height: 130,
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 4, color: Colors.white),
+                        shape: BoxShape.circle,
+                        color: Color(0xFFECECEC),
+                        boxShadow: [
+                          BoxShadow(
+                            spreadRadius: 2,
+                            blurRadius: 10,
+                            color: Colors.black.withOpacity(0.2),
+                          )
+                        ],
+                        image: DecorationImage(
+                          image: NetworkImage(GlobalData.userData.profilePic),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                      // child: Image.network(
+                      //   GlobalData.userData!['profilePic'],
+                      //   fit: BoxFit.fill,
+                      // ),
                     ),
-                  ),
+                    Positioned(
+                      bottom: 4,
+                      right: 4,
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            width: 4,
+                            color: Colors.white,
+                          ),
+                          color: Colors.blue,
+                        ),
+                        child: Icon(
+                          Icons.edit,
+                          size: 24,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-                Positioned(
-                  bottom: 4,
-                  right: 4,
-                  child: Icon(Icons.add_a_photo, size: 30),
-                )
-              ],
-            ),
-            SizedBox(height: 50),
-            // buildTextField("Name", placeHolder, isPasswordTextField)
-          ],
+              ),
+              SizedBox(height: 50),
+              buildTextField(fullNameController, 'Name', 'Name', false),
+              buildTextField(
+                  passwordController, 'Password', 'Enter Password', true),
+              buildTextField(newPasswordController, 'New Password',
+                  'Enter New Password', true),
+              buildTextField(confirmPasswordController, 'Confirm New Password',
+                  'Confirm New Password', true),
+              SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () {},
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(horizontal: 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: Text(
+                        'CANCEL',
+                        style: TextStyle(
+                          fontSize: 15,
+                          letterSpacing: 2,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.symmetric(horizontal: 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: Text(
+                        'SAVE',
+                        style: TextStyle(
+                          fontSize: 15,
+                          letterSpacing: 2,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget buildTextField(
-      String labelText, String placeHolder, bool isPasswordTextField) {
+  Widget buildTextField(TextEditingController controller, String labelText,
+      String placeHolder, bool isPasswordTextField) {
     return Padding(
-      padding: EdgeInsets.only(bottom: 30),
+      padding: EdgeInsets.only(bottom: 30, right: 30, left: 30),
       child: TextField(
+        controller: controller,
         obscureText: isPasswordTextField ? isObscure : false,
         decoration: InputDecoration(
           suffixIcon: isPasswordTextField
               ? IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.remove_red_eye, color: Colors.grey))
+                  splashColor: Color(0xFF0065FF),
+                  splashRadius: 16,
+                  onPressed: () {
+                    setState(() {
+                      isObscure = !isObscure;
+                    });
+                  },
+                  icon: Icon(
+                    Icons.remove_red_eye,
+                    color: Colors.grey,
+                  ),
+                )
               : null,
+          suffixIconConstraints: BoxConstraints(maxHeight: 28),
           contentPadding: EdgeInsets.only(bottom: 5),
           hintText: placeHolder,
           hintStyle: TextStyle(

@@ -1,5 +1,6 @@
 import 'package:chat_app/Screens/auth_screen/SignUpScreen.dart';
 import 'package:chat_app/Screens/bottom_bar_screen/bottom_bar_screen.dart';
+import 'package:chat_app/models/FirebaseHelper.dart';
 import 'package:chat_app/models/UsersModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:chat_app/utils.dart';
 import '../../globals/global_data.dart';
 
 class SignInScreen1 extends StatefulWidget {
@@ -48,15 +50,17 @@ class _SignInScreen1State extends State<SignInScreen1> {
         DocumentSnapshot userData =
             await _firestore.collection('users').doc(uid).get();
 
-        GlobalData.db
-            .collection('users')
-            .doc(uid)
-            .get()
-            .then((DocumentSnapshot docSnapshot) {
-          if (docSnapshot.exists) {
-            GlobalData.userData = docSnapshot.data() as Map<String, dynamic>;
-          }
-        });
+        // GlobalData.db
+        //     .collection('users')
+        //     .doc(uid)
+        //     .get()
+        //     .then((DocumentSnapshot docSnapshot) {
+        //   if (docSnapshot.exists) {
+        //     GlobalData.userData = docSnapshot.data() as Map<String, dynamic>;
+        //   }
+        // });
+
+        Utils.getUserData(uid);
 
         UserModel userModel =
             UserModel.fromMap(userData.data() as Map<String, dynamic>);

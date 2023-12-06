@@ -1,4 +1,5 @@
 import 'package:chat_app/globals/global_data.dart';
+import 'package:chat_app/models/UsersModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -14,7 +15,12 @@ class Utils {
         .get()
         .then((DocumentSnapshot docSnapshot) {
       if (docSnapshot.exists) {
-        GlobalData.userData = docSnapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic> map = docSnapshot.data() as Map<String, dynamic>;
+        GlobalData.userData = UserModel(
+            uid: map['uId'],
+            fullName: map['fullName'],
+            email: map['email'],
+            profilePic: map['profilePic']);
       }
     });
   }

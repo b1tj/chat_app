@@ -89,100 +89,79 @@ class _MoreScreenState extends State<MoreScreen> {
               },
               child: Row(
                 children: <Widget>[
-                  StreamBuilder(
-                    stream: _userStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return const Text("Connection error!");
-                      }
-
-                      var docSnapshot = snapshot.data
-                          as DocumentSnapshot<Map<String, dynamic>>?;
-
-                      if (docSnapshot != null && docSnapshot.exists) {
-                        var imgURL = docSnapshot.get("profilePic").toString();
-
-                        return Container(
-                            width: 50,
-                            height: 50,
-                            clipBehavior: Clip.hardEdge,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Color(0xFFECECEC),
+                  ...[
+                    Container(
+                      width: 50,
+                      height: 50,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Color(0xFFECECEC),
+                      ),
+                      child: GlobalData.userData.profilePic != ''
+                          ? Image.network(
+                              GlobalData.userData.profilePic,
+                              width: 20,
+                              height: 20,
+                              fit: BoxFit.fill,
+                            )
+                          : Container(
+                              width: 50,
+                              height: 50,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Color(0xFFECECEC),
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/vectors/ic_user_avatar.svg',
+                                width: 20,
+                                height: 20,
+                                fit: BoxFit.scaleDown,
+                              ),
                             ),
-                            child: imgURL != ''
-                                ? Image.network(
-                                    imgURL,
-                                    width: 20,
-                                    height: 20,
-                                    fit: BoxFit.fill,
-                                  )
-                                : Container(
-                                    width: 50,
-                                    height: 50,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: Color(0xFFECECEC),
-                                    ),
-                                    child: SvgPicture.asset(
-                                      'assets/vectors/ic_user_avatar.svg',
-                                      width: 20,
-                                      height: 20,
-                                      fit: BoxFit.scaleDown,
-                                    ),
-                                  ));
-                      } else {
-                        return Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
-                            color: Color(0xFFECECEC),
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/vectors/ic_user_avatar.svg',
-                            width: 20,
-                            height: 20,
-                            fit: BoxFit.scaleDown,
-                          ),
-                        );
-                      }
-                    },
-                  ),
+                    )
+                  ],
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        StreamBuilder(
-                          stream: _userStream,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasError) {
-                              return const Text("Connection error!");
-                            }
+                        // StreamBuilder(
+                        //   stream: _userStream,
+                        //   builder: (context, snapshot) {
+                        //     if (snapshot.hasError) {
+                        //       return const Text("Connection error!");
+                        //     }
 
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Text("Loading...");
-                            }
+                        //     if (snapshot.connectionState ==
+                        //         ConnectionState.waiting) {
+                        //       return const Text("Loading...");
+                        //     }
 
-                            var docSnapshot = snapshot.data
-                                as DocumentSnapshot<Map<String, dynamic>>?;
+                        //     var docSnapshot = snapshot.data
+                        //         as DocumentSnapshot<Map<String, dynamic>>?;
 
-                            if (docSnapshot != null && docSnapshot.exists) {
-                              var fullName = docSnapshot.get("fullName");
+                        //     if (docSnapshot != null && docSnapshot.exists) {
+                        //       var fullName = docSnapshot.get("fullName");
 
-                              return Text(
-                                fullName,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              );
-                            } else {
-                              return const Text("No user data");
-                            }
-                          },
+                        //       return Text(
+                        //         fullName,
+                        //         style: const TextStyle(
+                        //           fontSize: 14,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       );
+                        //     } else {
+                        //       return const Text("No user data");
+                        //     }
+                        //   },
+                        // ),
+                        Text(
+                          GlobalData.userData.fullName,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         SizedBox(height: 8),
                         Text(

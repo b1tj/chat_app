@@ -2,11 +2,15 @@ import 'dart:io';
 
 import 'package:chat_app/globals/global_data.dart';
 import 'package:chat_app/models/UsersModel.dart';
+import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/utils.dart';
+import 'package:chat_app/widgets/show_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdateScreen extends StatefulWidget {
@@ -20,22 +24,24 @@ class _UpdateScreenState extends State<UpdateScreen> {
   bool isObscure = true;
   File? imageFile;
   bool isUploading = false; // New variable to track the upload state
-  // final userData = UserModel(fullName: GlobalData.userData['fullName'], )
+
   final TextEditingController fullNameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
 
-  // final userData = UserModel(
-  //     uid: GlobalData.uid,
-  //     email: GlobalData.userData!['email'],
-  //     fullName: GlobalData.userData!['fullName'],
-  //     profilePic: GlobalData.userData!['profilePic']);
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    passwordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
-    FocusManager.instance.primaryFocus?.unfocus();
     fullNameController.text = GlobalData.userData.fullName;
     super.initState();
   }
@@ -84,7 +90,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
     );
   }
 
-  void uploadData() async {
+  Future<void> uploadData() async {
     try {
       if (imageFile == null || isUploading) {
         // No image selected or already uploading
@@ -109,15 +115,77 @@ class _UpdateScreenState extends State<UpdateScreen> {
       // Update the user's avatar URL in Firestore
       await FirebaseFirestore.instance
           .collection("users")
-          .doc(GlobalData.user!.uid)
+          .doc(GlobalData.userData.uid)
           .update({"profilePic": downloadURL});
     } catch (error) {
       print("Error uploading image: $error");
     } finally {
-      setState(() {
-        // Set loading state to false, whether success or failure
-        isUploading = false;
+      if (mounted) {
+        setState(() {
+          // Set loading state to false, whether success or failure
+          isUploading = false;
+        });
+      }
+    }
+  }
+
+  void changePassword() {
+    try {
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: GlobalData.userData.email, password: passwordController.text);
+      GlobalData.user!.reauthenticateWithCredential(credential).then((value) {
+        GlobalData.user!.updatePassword(newPasswordController.text);
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const SignInScreen1()),
+        );
+        showAlertDialog(
+            context,
+            "Done",
+            'Your password changed successfully... Login again !',
+            null,
+            null,
+            true);
       });
+    } on FirebaseAuthException catch (err) {
+      if (err.code == 'invalid-credential') {
+        context.mounted
+            ? showAlertDialog(context, 'Wrong Password',
+                'Your password you entered is wrong.')
+            : null;
+      }
+    }
+  }
+
+  void changeName(String newName) {
+    Utils.updateUserName(GlobalData.uid, newName);
+  }
+
+  //Logic when press CANCEL button
+  void onCancel() {
+    fullNameController.text = GlobalData.userData.fullName;
+    passwordController.text = '';
+    newPasswordController.text = '';
+    confirmPasswordController.text = '';
+  }
+
+  //Logic when press SAVE button
+  void onSave() async {
+    if (passwordController.text.isNotEmpty &&
+        newPasswordController.text.isNotEmpty &&
+        confirmPasswordController.text.isNotEmpty &&
+        newPasswordController.text == confirmPasswordController.text) {
+      changePassword();
+    }
+
+    if (fullNameController.text != GlobalData.userData.fullName) {
+      changeName(fullNameController.text);
+      Utils.getUserData(GlobalData.uid);
+    }
+
+    if (imageFile != null) {
+      await uploadData();
+      await Utils.getUserData(GlobalData.uid);
     }
   }
 
@@ -161,15 +229,17 @@ class _UpdateScreenState extends State<UpdateScreen> {
                             color: Colors.black.withOpacity(0.2),
                           )
                         ],
-                        image: DecorationImage(
-                          image: NetworkImage(GlobalData.userData.profilePic),
-                          fit: BoxFit.fill,
-                        ),
+                        image: imageFile == null
+                            ? DecorationImage(
+                                image: NetworkImage(
+                                    GlobalData.userData.profilePic),
+                                fit: BoxFit.fill,
+                              )
+                            : DecorationImage(
+                                image: FileImage(imageFile!),
+                                fit: BoxFit.fill,
+                              ),
                       ),
-                      // child: Image.network(
-                      //   GlobalData.userData!['profilePic'],
-                      //   fit: BoxFit.fill,
-                      // ),
                     ),
                     Positioned(
                       bottom: 4,
@@ -210,7 +280,9 @@ class _UpdateScreenState extends State<UpdateScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        onCancel();
+                      },
                       style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(horizontal: 50),
                         shape: RoundedRectangleBorder(
@@ -227,7 +299,9 @@ class _UpdateScreenState extends State<UpdateScreen> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        onSave();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blue,
                         padding: EdgeInsets.symmetric(horizontal: 50),
@@ -235,12 +309,26 @@ class _UpdateScreenState extends State<UpdateScreen> {
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: Text(
-                        'SAVE',
-                        style: TextStyle(
-                          fontSize: 15,
-                          letterSpacing: 2,
-                          color: Colors.white,
+                      child: SizedBox(
+                        width: 70,
+                        height: 30,
+                        child: Center(
+                          child: isUploading == false
+                              ? Text(
+                                  'SAVE',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    letterSpacing: 2,
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                ),
                         ),
                       ),
                     )
@@ -262,6 +350,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         controller: controller,
         obscureText: isPasswordTextField ? isObscure : false,
         decoration: InputDecoration(
+          label: Text(labelText),
           suffixIcon: isPasswordTextField
               ? IconButton(
                   splashColor: Color(0xFF0065FF),

@@ -72,18 +72,24 @@ class _SignInScreen1State extends State<SignInScreen1> {
 
         await Future.delayed(const Duration(seconds: 3));
 
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => BottomBarScreen()),
-        );
-      } on FirebaseAuthException catch (e) {
         if (context.mounted) {
-          _showAlertDialog(context, e.message.toString(), e.code);
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => BottomBarScreen()),
+          );
         }
-      } finally {
+      } on FirebaseAuthException catch (e) {
         setState(() {
           _isLoading = false;
         });
+        if (context.mounted) {
+          _showAlertDialog(context, e.message.toString(), e.code);
+        }
       }
+      // finally {
+      //   setState(() {
+      //     _isLoading = false;
+      //   });
+      // }
     }
   }
 

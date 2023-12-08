@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class MoreScreen extends StatefulWidget {
-  MoreScreen({Key? key});
+  const MoreScreen({super.key});
 
   void signUserOut(BuildContext context) async {
     await FirebaseAuth.instance.signOut();
@@ -99,11 +99,16 @@ class _MoreScreenState extends State<MoreScreen> {
                         color: Color(0xFFECECEC),
                       ),
                       child: GlobalData.userData.profilePic != ''
-                          ? Image.network(
-                              GlobalData.userData.profilePic,
-                              width: 20,
-                              height: 20,
-                              fit: BoxFit.fill,
+                          ? StreamBuilder(
+                              stream: _userStream,
+                              builder: (context, snapshot) {
+                                return Image.network(
+                                  GlobalData.userData.profilePic,
+                                  width: 20,
+                                  height: 20,
+                                  fit: BoxFit.fill,
+                                );
+                              },
                             )
                           : Container(
                               width: 50,
@@ -126,42 +131,17 @@ class _MoreScreenState extends State<MoreScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // StreamBuilder(
-                        //   stream: _userStream,
-                        //   builder: (context, snapshot) {
-                        //     if (snapshot.hasError) {
-                        //       return const Text("Connection error!");
-                        //     }
-
-                        //     if (snapshot.connectionState ==
-                        //         ConnectionState.waiting) {
-                        //       return const Text("Loading...");
-                        //     }
-
-                        //     var docSnapshot = snapshot.data
-                        //         as DocumentSnapshot<Map<String, dynamic>>?;
-
-                        //     if (docSnapshot != null && docSnapshot.exists) {
-                        //       var fullName = docSnapshot.get("fullName");
-
-                        //       return Text(
-                        //         fullName,
-                        //         style: const TextStyle(
-                        //           fontSize: 14,
-                        //           fontWeight: FontWeight.bold,
-                        //         ),
-                        //       );
-                        //     } else {
-                        //       return const Text("No user data");
-                        //     }
-                        //   },
-                        // ),
-                        Text(
-                          GlobalData.userData.fullName,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        StreamBuilder(
+                          stream: _userStream,
+                          builder: (context, snapshot) {
+                            return Text(
+                              GlobalData.userData.fullName,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            );
+                          },
                         ),
                         SizedBox(height: 8),
                         Text(

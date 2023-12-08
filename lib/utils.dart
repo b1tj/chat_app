@@ -24,4 +24,13 @@ class Utils {
       }
     });
   }
+
+  static updateUserName(uid, newName) {
+    GlobalData.db
+        .collection('users')
+        .doc(uid)
+        .update({'fullName': newName})
+        .then((value) => print('User updated'))
+        .catchError((err) => print(err));
+  }
 }

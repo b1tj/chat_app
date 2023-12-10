@@ -1,3 +1,4 @@
+import 'package:chat_app/Screens/contact_screen/contact_screen.dart';
 import 'package:chat_app/globals/global_data.dart';
 import 'package:chat_app/screens/more_screen/more_screen.dart';
 import 'package:chat_app/utils.dart';
@@ -17,7 +18,7 @@ class BottomBarScreen extends StatefulWidget {
 class _BottomBarScreenState extends State<BottomBarScreen> {
   int _selectedIndex = 1;
 
-  final pages = [Text('Chats a'), HomePage(), MoreScreen()];
+  final pages = [ContactScreen(), HomePage(), MoreScreen()];
 
   void _onItemTapped(int index) {
     setState(() {

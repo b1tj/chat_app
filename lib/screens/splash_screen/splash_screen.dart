@@ -12,22 +12,23 @@ class _StartScreenState extends State<StartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Container(
-            decoration: BoxDecoration(),
+            decoration: BoxDecoration(
+              color: Colors.white
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: 80),
+                  padding: const EdgeInsets.only(top: 30),
                   child: Container(
                     child: const Image(
-                      image: NetworkImage(
-                          "https://scontent.fsgn2-6.fna.fbcdn.net/v/t1.15752-9/396549060_1145438923507412_4609578968106655464_n.png?_nc_cat=110&ccb=1-7&_nc_sid=8cd0a2&_nc_ohc=wHVMdtYVjwMAX9f2-3m&_nc_ht=scontent.fsgn2-6.fna&oh=03_AdT1p4SLaKnUIauVyA22Cto-pLq3jZcZmOo4CQNqCICJXw&oe=6563317D"),
-                    ),
+                      image: AssetImage("assets/images/banner.jpg")),
                   ),
                 ),
                 Padding(

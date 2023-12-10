@@ -267,8 +267,12 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ],
                                         ),
-                                        subtitle: Text(chatRoomModel.lastMessage
-                                            .toString()),
+                                        subtitle: Text(
+                                          chatRoomModel.lastMessage.toString(),
+                                          overflow: TextOverflow
+                                              .ellipsis, // Show ellipsis for long messages
+                                          maxLines: 1, // Limit to a single line
+                                        ),
                                       ),
                                     );
                                   } else {

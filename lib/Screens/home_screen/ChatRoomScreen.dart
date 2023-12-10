@@ -126,30 +126,36 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     as Map<String, dynamic>);
 
                             return Row(
-                              mainAxisAlignment:
-                                  (currentMessage.sender == GlobalData.uid)
-                                      ? MainAxisAlignment.end
-                                      : MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  margin: EdgeInsets.symmetric(vertical: 2),
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 10, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: (currentMessage.sender == GlobalData.uid)
-                                        ? Colors.blue
-                                        : Colors.grey[400],
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    currentMessage.text.toString(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ],
-                            );
+  mainAxisAlignment:
+      (currentMessage.sender == GlobalData.uid)
+          ? MainAxisAlignment.end
+          : MainAxisAlignment.start,
+  children: [
+    Container(
+      margin: EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.of(context).size.width * 0.7, // Set a maximum width
+      ),
+      decoration: BoxDecoration(
+        color: (currentMessage.sender == GlobalData.uid)
+            ? Colors.blue
+            : Colors.grey[400],
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        currentMessage.text.toString(),
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+        ),
+        softWrap: true, // Allow text to wrap to the next line
+        maxLines: null, // Unlimited number of lines
+      ),
+    ),
+  ],
+);
+
                           });
                     } else if (snapshot.hasError) {
                       return Center(

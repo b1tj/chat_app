@@ -11,6 +11,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
+
+
 var uuid = Uuid();
 
 class NewMessageScreen extends StatefulWidget {
@@ -57,6 +59,7 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
       ChatRoomModel newChatRoom = ChatRoomModel(
         chatRoomId: uuid.v1(),
         lastMessage: "",
+        lastTime: DateTime(2000, 1, 1),
         participants: {
           GlobalData.uid: true,
           targetUser.uid!: true,

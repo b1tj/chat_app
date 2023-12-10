@@ -20,23 +20,25 @@ class _ContactScreen extends State<ContactScreen> {
 
   Future<void> fetchUserData() async {
     try {
-      QuerySnapshot<Map<String, dynamic>> dataSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .where('uId',)
-          .get();
+      QuerySnapshot<Map<String, dynamic>> dataSnapshot =
+      await FirebaseFirestore.instance.collection('users').get();
 
       if (dataSnapshot.docs.isNotEmpty) {
-        // User data found, populate the list
+        // User data found, populate the list and sort by name
+        List<UserEntity> unsortedUsers = dataSnapshot.docs.map((doc) {
+          Map<String, dynamic> userMap = doc.data()!;
+          return UserEntity(
+            avatar: userMap['profilePic'],
+            userName: userMap['fullName'],
+            email: userMap['email'],
+            status: userMap['status'],
+          );
+        }).toList();
+
+        // Sort the users by name
+        unsortedUsers.sort((a, b) => a.userName!.compareTo(b.userName!));
         setState(() {
-          users = dataSnapshot.docs.map((doc) {
-            Map<String, dynamic> userMap = doc.data()!;
-            return UserEntity(
-              avatar: userMap['profilePic'],
-              userName: userMap['fullName'],
-              email: userMap['email'],
-              status: userMap['status'],
-            );
-          }).toList();
+          users = unsortedUsers;
         });
       }
     } catch (error) {

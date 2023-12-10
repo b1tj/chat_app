@@ -27,47 +27,45 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   TextEditingController messageController = TextEditingController();
-  
 
   void sendMessage() async {
-  String msg = messageController.text.trim();
-  messageController.clear();
+    String msg = messageController.text.trim();
+    messageController.clear();
 
-  if (msg.isNotEmpty) {
-    User? user = FirebaseAuth.instance.currentUser;
+    if (msg.isNotEmpty) {
+      User? user = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      MessageModel newMessage = MessageModel(
-        messageId: uuid.v1(),
-        sender: GlobalData.uid,
-        timeStamp: DateTime.now(),
-        text: msg,
-        seenStatus: false,
-      );
+      if (user != null) {
+        MessageModel newMessage = MessageModel(
+          messageId: uuid.v1(),
+          sender: GlobalData.uid,
+          timeStamp: DateTime.now(),
+          text: msg,
+          seenStatus: false,
+        );
 
-      await FirebaseFirestore.instance
-          .collection("chatRooms")
-          .doc(widget.chatroom.chatRoomId)
-          .collection("messages")
-          .doc(newMessage.messageId)
-          .set(newMessage.toMap());
+        await FirebaseFirestore.instance
+            .collection("chatRooms")
+            .doc(widget.chatroom.chatRoomId)
+            .collection("messages")
+            .doc(newMessage.messageId)
+            .set(newMessage.toMap());
 
-      // Update lastMessage field in the chat room
-      widget.chatroom.lastMessage = msg;
+        // Update lastMessage field in the chat room
+        widget.chatroom.lastMessage = msg;
 
-      // Update the chat room in Firestore
-      await FirebaseFirestore.instance
-          .collection("chatRooms")
-          .doc(widget.chatroom.chatRoomId)
-          .update({
-        'lastMessage': msg,
-        // Add any other fields you want to update
-        'lastTime': DateTime.now()
-      });
+        // Update the chat room in Firestore
+        await FirebaseFirestore.instance
+            .collection("chatRooms")
+            .doc(widget.chatroom.chatRoomId)
+            .update({
+          'lastMessage': msg,
+          // Add any other fields you want to update
+          'lastTime': DateTime.now()
+        });
+      }
     }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -126,36 +124,39 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                     as Map<String, dynamic>);
 
                             return Row(
-  mainAxisAlignment:
-      (currentMessage.sender == GlobalData.uid)
-          ? MainAxisAlignment.end
-          : MainAxisAlignment.start,
-  children: [
-    Container(
-      margin: EdgeInsets.symmetric(vertical: 2),
-      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.7, // Set a maximum width
-      ),
-      decoration: BoxDecoration(
-        color: (currentMessage.sender == GlobalData.uid)
-            ? Colors.blue
-            : Colors.grey[400],
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        currentMessage.text.toString(),
-        style: TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
-        softWrap: true, // Allow text to wrap to the next line
-        maxLines: null, // Unlimited number of lines
-      ),
-    ),
-  ],
-);
-
+                              mainAxisAlignment:
+                                  (currentMessage.sender == GlobalData.uid)
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.symmetric(vertical: 2),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.7, // Set a maximum width
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: (currentMessage.sender ==
+                                            GlobalData.uid)
+                                        ? Colors.blue
+                                        : Colors.grey[400],
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    currentMessage.text.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    softWrap: true,
+                                    maxLines: null,
+                                  ),
+                                ),
+                              ],
+                            );
                           });
                     } else if (snapshot.hasError) {
                       return Center(

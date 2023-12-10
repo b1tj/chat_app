@@ -187,7 +187,6 @@ class _HomePageState extends State<HomePage> {
                 stream: FirebaseFirestore.instance
                     .collection("chatRooms")
                     .where("participants.${GlobalData.uid}", isEqualTo: true)
-                    // .orderBy("lastTime", descending: true)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.active) {
@@ -195,13 +194,18 @@ class _HomePageState extends State<HomePage> {
                       QuerySnapshot chatRoomSnapshot =
                           snapshot.data as QuerySnapshot;
 
-                      return ListView.builder(
-                        itemCount: chatRoomSnapshot.docs.length,
-                        itemBuilder: (context, index) {
-                          ChatRoomModel chatRoomModel = ChatRoomModel.fromMap(
-                              chatRoomSnapshot.docs[index].data()
-                                  as Map<String, dynamic>);
+                      List<ChatRoomModel> chatRooms = chatRoomSnapshot.docs
+                          .map((doc) => ChatRoomModel.fromMap(
+                              doc.data() as Map<String, dynamic>))
+                          .toList();
 
+                      // Sắp xếp danh sách chat rooms theo thời gian gần nhất
+                      chatRooms.sort(ChatRoomModel.lastTimeComparator);
+
+                      return ListView.builder(
+                        itemCount: chatRooms.length,
+                        itemBuilder: (context, index) {
+                          ChatRoomModel chatRoomModel = chatRooms[index];
                           Map<String, dynamic> participants =
                               chatRoomModel.participants!;
                           List<String> participantKeys =
@@ -238,40 +242,31 @@ class _HomePageState extends State<HomePage> {
                                         );
                                       },
                                       child: ListTile(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            horizontal: 16),
+                                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
                                         leading: CircleAvatar(
                                           backgroundImage: NetworkImage(
                                             targetUser.profilePic.toString(),
                                           ),
                                         ),
                                         title: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               targetUser.fullName.toString(),
                                             ),
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.only(top: 3),
+                                              padding: const EdgeInsets.only(top: 3),
                                               child: Text(
-                                                chatRoomModel.lastTime != null
-                                                    ? DateFormat('HH:mm')
-                                                        .format(chatRoomModel
-                                                            .lastTime!)
-                                                    : '',
-                                                style: TextStyle(
-                                                    color: Colors.grey),
+                                                formatLastTime(chatRoomModel.lastTime),
+                                                style: TextStyle(color: Colors.grey),
                                               ),
                                             ),
                                           ],
                                         ),
                                         subtitle: Text(
-                                          chatRoomModel.lastMessage.toString(),
-                                          overflow: TextOverflow
-                                              .ellipsis, // Show ellipsis for long messages
-                                          maxLines: 1, // Limit to a single line
+                                          chatRoomModel.lastMessage ?? '', // Tránh lỗi nếu lastMessage là null
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
                                         ),
                                       ),
                                     );
@@ -310,5 +305,27 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+}
+
+
+String formatLastTime(DateTime? lastTime) {
+  if (lastTime == null) {
+    return '';
+  }
+
+  DateTime now = DateTime.now();
+  DateTime today = DateTime(now.year, now.month, now.day);
+  DateTime yesterday = today.subtract(Duration(days: 1));
+
+  if (lastTime.isAfter(today)) {
+    // Nếu là hôm nay, hiển thị giờ
+    return DateFormat('HH:mm').format(lastTime);
+  } else if (lastTime.isAfter(yesterday)) {
+    // Nếu là hôm qua, hiển thị 'Yesterday'
+    return 'Yesterday';
+  } else {
+    // Nếu không phải hôm nay hoặc hôm qua, hiển thị ngày/tháng
+    return DateFormat('dd/MM/yyyy').format(lastTime);
   }
 }

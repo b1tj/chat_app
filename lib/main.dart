@@ -90,7 +90,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
         );
       }
 
-      // Lưu trạng thái đã hiển thị màn hình chào mừng
+      // Lưu trạng thái đã hiển thị màn hình chào mừng hehe
       prefs.setBool('showWelcomeScreen', false);
     }
   }

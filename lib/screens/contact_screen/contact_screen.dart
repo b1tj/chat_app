@@ -1,5 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:chat_app/models/ChatRoomModel.dart';
+import 'package:chat_app/models/UsersModel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({Key? key}) : super(key: key);
@@ -21,13 +24,13 @@ class _ContactScreen extends State<ContactScreen> {
   Future<void> fetchUserData() async {
     try {
       QuerySnapshot<Map<String, dynamic>> dataSnapshot =
-      await FirebaseFirestore.instance.collection('users').get();
+          await FirebaseFirestore.instance.collection('users').get();
 
       if (dataSnapshot.docs.isNotEmpty) {
-        // User data found, populate the list and sort by name
         List<UserEntity> unsortedUsers = dataSnapshot.docs.map((doc) {
           Map<String, dynamic> userMap = doc.data()!;
           return UserEntity(
+            uid: userMap['uId'],
             avatar: userMap['profilePic'],
             userName: userMap['fullName'],
             email: userMap['email'],
@@ -35,7 +38,6 @@ class _ContactScreen extends State<ContactScreen> {
           );
         }).toList();
 
-        // Sort the users by name
         unsortedUsers.sort((a, b) => a.userName!.compareTo(b.userName!));
         setState(() {
           users = unsortedUsers;
@@ -46,13 +48,27 @@ class _ContactScreen extends State<ContactScreen> {
     }
   }
 
+  void handleUserSelection(UserEntity selectedUser) {
+    print('Selected User Information:');
+    print('UID: ${selectedUser.uid}');
+    print('Username: ${selectedUser.userName}');
+    print('Email: ${selectedUser.email}');
+    print('Avatar: ${selectedUser.avatar}');
+    print('Status: ${selectedUser.status}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('Contact', style: TextStyle(color: Colors.black)),
-        centerTitle: true,
+        elevation: 0,
+        bottomOpacity: 0,
+        title: Padding(
+          padding: EdgeInsets.only(left: 10, bottom: 13),
+          child: Text('Suggestion'),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 1),
@@ -76,52 +92,58 @@ class _ContactScreen extends State<ContactScreen> {
                 left: 24,
                 right: 24,
               ),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 12,
-                    ),
-                    child: SizedBox(
-                      height: 56,
-                      width: 56,
-                      child: Center(
-                        child: Container(
-                          height: 48,
-                          width: 48,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            image: DecorationImage(
-                              image: NetworkImage(users[index].avatar ?? ''),
+              child: InkWell(
+                onTap: () {
+                  // Call the function to handle user selection
+                  handleUserSelection(users[index]);
+                },
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 12,
+                      ),
+                      child: SizedBox(
+                        height: 56,
+                        width: 56,
+                        child: Center(
+                          child: Container(
+                            height: 48,
+                            width: 48,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              image: DecorationImage(
+                                image: NetworkImage(users[index].avatar ?? ''),
+                              ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        users[index].userName ?? '',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          users[index].userName ?? '',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        users[index].email ?? '',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
+                        SizedBox(height: 4),
+                        Text(
+                          users[index].email ?? '',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 4),
-                    ],
-                  ),
-                ],
+                        SizedBox(height: 4),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             );
           },
@@ -132,15 +154,27 @@ class _ContactScreen extends State<ContactScreen> {
 }
 
 class UserEntity {
+  final String? uid;
   final String? avatar;
   final String? userName;
   final String? email;
   final String? status;
 
   UserEntity({
+    this.uid,
     this.status,
     this.avatar,
     this.userName,
     this.email,
   });
+
+  factory UserEntity.fromMap(Map<String, dynamic> map) {
+    return UserEntity(
+      uid: map['uid'],
+      avatar: map['profilePic'],
+      userName: map['fullName'],
+      email: map['email'],
+      status: map['status'],
+    );
+  }
 }

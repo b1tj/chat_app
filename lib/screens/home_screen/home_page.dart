@@ -4,7 +4,6 @@ import 'package:chat_app/Screens/home_screen/NewMessageScreen.dart';
 import 'package:chat_app/globals/global_data.dart';
 import 'package:chat_app/models/ChatRoomModel.dart';
 import 'package:chat_app/models/FirebaseHelper.dart';
-import 'package:chat_app/screens/home_screen/chat_detail_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,29 +25,6 @@ class _HomePageState extends State<HomePage> {
     email: "john.doe@example.com",
     profilePic: "url_to_profile_pic",
   );
-
-  List<String> people = [
-    'Messi',
-    'Vinh',
-    'Ronaldo',
-    'Sarah',
-    'Natasha',
-    'Robert',
-    'Thomas',
-    'Natasha',
-    'Claire',
-    'Olivia',
-    'Emma',
-    'Amelia',
-    'Liam',
-    'William',
-    'Lucas',
-    'Henry',
-    'Mia',
-    'Ava',
-    'Evelyn',
-    'Luna',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -102,79 +78,6 @@ class _HomePageState extends State<HomePage> {
                   color: Color.fromARGB(255, 235, 234, 234),
                   borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-            ),
-            Container(
-              height: 100,
-              child: ListView.builder(
-                itemCount: people.length,
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, int i) {
-                  bool isOnline = true;
-
-                  return InkWell(
-                    onTap: () {
-                      // Navigate to chat detail screen when user is tapped
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute<void>(
-                          builder: (BuildContext context) =>
-                              ChatDetailsScreen(i + 1, people[i]),
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                height: 60,
-                                width: 60,
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.shade200,
-                                  image: DecorationImage(
-                                    image: AssetImage(
-                                      'assets/images/${i + 1}.png',
-                                    ),
-                                    scale: 10,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  width: 16,
-                                  height: 16,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color:
-                                        isOnline ? Colors.green : Colors.grey,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            people[i],
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
               ),
             ),
 
@@ -242,29 +145,35 @@ class _HomePageState extends State<HomePage> {
                                         );
                                       },
                                       child: ListTile(
-                                        contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                                        contentPadding: EdgeInsets.symmetric(
+                                            horizontal: 16),
                                         leading: CircleAvatar(
                                           backgroundImage: NetworkImage(
                                             targetUser.profilePic.toString(),
                                           ),
                                         ),
                                         title: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               targetUser.fullName.toString(),
                                             ),
                                             Padding(
-                                              padding: const EdgeInsets.only(top: 3),
+                                              padding:
+                                                  const EdgeInsets.only(top: 3),
                                               child: Text(
-                                                formatLastTime(chatRoomModel.lastTime),
-                                                style: TextStyle(color: Colors.grey),
+                                                formatLastTime(
+                                                    chatRoomModel.lastTime),
+                                                style: TextStyle(
+                                                    color: Colors.grey),
                                               ),
                                             ),
                                           ],
                                         ),
                                         subtitle: Text(
-                                          chatRoomModel.lastMessage ?? '', // Tránh lỗi nếu lastMessage là null
+                                          chatRoomModel.lastMessage ??
+                                              '', // Tránh lỗi nếu lastMessage là null
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                         ),
@@ -307,7 +216,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
 
 String formatLastTime(DateTime? lastTime) {
   if (lastTime == null) {

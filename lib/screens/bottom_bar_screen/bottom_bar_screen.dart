@@ -2,7 +2,6 @@ import 'package:chat_app/Screens/contact_screen/contact_screen.dart';
 import 'package:chat_app/globals/global_data.dart';
 import 'package:chat_app/screens/more_screen/more_screen.dart';
 import 'package:chat_app/utils.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 

@@ -1,4 +1,4 @@
-import 'package:chat_app/Screens/auth_screen/SignUpScreen.dart';
+import 'package:chat_app/Screens/auth_screen/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
 class StartScreen extends StatefulWidget {
@@ -17,9 +17,7 @@ class _StartScreenState extends State<StartScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 20),
           child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white
-            ),
+            decoration: BoxDecoration(color: Colors.white),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -28,7 +26,7 @@ class _StartScreenState extends State<StartScreen> {
                   padding: const EdgeInsets.only(top: 30),
                   child: Container(
                     child: const Image(
-                      image: AssetImage("assets/images/banner.jpg")),
+                        image: AssetImage("assets/images/banner.jpg")),
                   ),
                 ),
                 Padding(

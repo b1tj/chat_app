@@ -1,7 +1,7 @@
-import 'package:chat_app/Screens/auth_screen/SignUpScreen.dart';
+import 'package:chat_app/Screens/auth_screen/sign_up_screen.dart';
 import 'package:chat_app/Screens/bottom_bar_screen/bottom_bar_screen.dart';
-import 'package:chat_app/models/FirebaseHelper.dart';
-import 'package:chat_app/models/UsersModel.dart';
+import 'package:chat_app/models/firebase_helper.dart';
+import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,14 +11,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chat_app/utils.dart';
 import '../../globals/global_data.dart';
 
-class SignInScreen1 extends StatefulWidget {
-  const SignInScreen1({Key? key});
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({Key? key});
 
   @override
-  State<SignInScreen1> createState() => _SignInScreen1State();
+  State<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreen1State extends State<SignInScreen1> {
+class _SignInScreenState extends State<SignInScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

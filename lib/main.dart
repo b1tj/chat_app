@@ -1,5 +1,4 @@
-
-import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/screens/auth_screen/sign_in_screen.dart';
 import 'package:chat_app/screens/bottom_bar_screen/bottom_bar_screen.dart';
 
 import 'package:chat_app/screens/splash_screen/splash_screen.dart';
@@ -98,7 +97,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SignInScreen1(),
+      body: SignInScreen(),
     );
   }
 }

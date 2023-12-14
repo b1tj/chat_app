@@ -1,9 +1,9 @@
-import 'package:chat_app/Screens/home_screen/ChatRoomScreen.dart';
-import 'package:chat_app/models/UsersModel.dart';
-import 'package:chat_app/Screens/home_screen/NewMessageScreen.dart';
+import 'package:chat_app/Screens/home_screen/chat_room_screen.dart';
+import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/Screens/home_screen/new_message_screen.dart';
 import 'package:chat_app/globals/global_data.dart';
-import 'package:chat_app/models/ChatRoomModel.dart';
-import 'package:chat_app/models/FirebaseHelper.dart';
+import 'package:chat_app/models/chat_room_model.dart';
+import 'package:chat_app/models/firebase_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

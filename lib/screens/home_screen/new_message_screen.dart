@@ -1,17 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:math';
-import 'package:chat_app/Screens/home_screen/ChatRoomScreen.dart';
+import 'package:chat_app/Screens/home_screen/chat_room_screen.dart';
 import 'package:chat_app/globals/global_data.dart';
-import 'package:chat_app/models/ChatRoomModel.dart';
-import 'package:chat_app/models/UsersModel.dart';
+import 'package:chat_app/models/chat_room_model.dart';
+import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-
-
 
 var uuid = Uuid();
 
@@ -22,7 +19,8 @@ class NewMessageScreen extends StatefulWidget {
   const NewMessageScreen({
     super.key,
     required this.userModel,
-    this.firebaseUser, this.chatroom,
+    this.firebaseUser,
+    this.chatroom,
   });
 
   @override
@@ -146,11 +144,9 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
 
                         return ListTile(
                           onTap: () async {
-                            
                             ChatRoomModel? chatroomModel =
                                 await getChatRoomModel(searchedUser);
                             if (chatroomModel != null) {
-                             
                               Navigator.pop(context);
                               Navigator.push(
                                 context,
@@ -162,8 +158,6 @@ class _NewMessageScreenState extends State<NewMessageScreen> {
                                   ),
                                 ),
                               );
-
-                              
                             } else {
                               // Handle the case where getChatRoomModel returns null
                               print("ChatRoomModel is null");

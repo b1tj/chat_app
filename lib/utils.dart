@@ -1,5 +1,5 @@
 import 'package:chat_app/globals/global_data.dart';
-import 'package:chat_app/models/UsersModel.dart';
+import 'package:chat_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

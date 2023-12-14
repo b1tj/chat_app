@@ -1,6 +1,6 @@
-import 'package:chat_app/Screens/auth_screen/SignInScreen1.dart';
-import 'package:chat_app/Screens/auth_screen/StepUploadAvatar.dart';
-import 'package:chat_app/models/UsersModel.dart';
+import 'package:chat_app/Screens/auth_screen/step_upload_avatar_screen.dart';
+import 'package:chat_app/models/user_model.dart';
+import 'package:chat_app/screens/auth_screen/sign_in_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -262,7 +262,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => SignInScreen1(),
+                                  builder: (context) => SignInScreen(),
                                 ),
                               );
                             },

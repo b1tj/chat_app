@@ -1,16 +1,13 @@
 import 'dart:io';
 
 import 'package:chat_app/globals/global_data.dart';
-import 'package:chat_app/models/UsersModel.dart';
-import 'package:chat_app/screens/auth_screen/SignInScreen1.dart';
+import 'package:chat_app/screens/auth_screen/sign_in_screen.dart';
 import 'package:chat_app/utils.dart';
 import 'package:chat_app/widgets/show_alert_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdateScreen extends StatefulWidget {
@@ -137,7 +134,7 @@ class _UpdateScreenState extends State<UpdateScreen> {
         GlobalData.user!.updatePassword(newPasswordController.text);
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const SignInScreen1()),
+          MaterialPageRoute(builder: (context) => const SignInScreen()),
         );
         showAlertDialog(
             context,

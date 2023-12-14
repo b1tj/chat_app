@@ -1,5 +1,5 @@
-import 'package:chat_app/models/ChatRoomModel.dart';
-import 'package:chat_app/models/UsersModel.dart';
+import 'package:chat_app/models/chat_room_model.dart';
+import 'package:chat_app/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
